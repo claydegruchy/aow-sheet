@@ -1,13 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-
-  import type { SkillScore, AOWCharacterForm } from "./dataTypes";
+  import type { SkillScore, AOWCharacterForm, KungFuStyle } from "./dataTypes";
+  import { kungFuStyles } from "./dataTypes";
   import SkillDisplay from "./SkillDisplay.svelte";
 
   export let character;
 
   function handleUpdate(event) {
-    const { skill,  value } = event.detail;
+    const { skill, value } = event.detail;
     console.log(event.detail);
     $character[skill.name] = value;
   }
@@ -20,6 +20,10 @@
     <label>
       Name:
       <input type="text" bind:value={$character.name} />
+    </label>
+    <label>
+      Description:
+      <textarea bind:value={$character.Description} />
     </label>
     <label>
       CP:
@@ -79,23 +83,53 @@
       <thead>
         <tr>
           <th>Name</th>
+          <th>Style</th>
+
           <th>Level</th>
           <th>PS</th>
           <th>Melee (STR {$character.STR}) %</th>
           <th>Ranged (DEX {$character.DEX}) %</th>
         </tr>
       </thead>
-      <!-- prettier-ignore -->
       <tbody>
-
-		  <tr>
-			  <td>Warrior of the {$character.Warrior1.style}</td>          
-			  <td><input type="number" bind:value={$character.Warrior1.level} /></td>
-			  <td></td>
-			  <td><input type="number" disabled value={$character.Warrior1MeleeScore} /></td>
-			  <td><input type="number" disabled value={$character.Warrior1RangedScore} /></td>
-			</tr>
-
+        <tr>
+          <td>Warrior of the {$character.Warrior1.style.name}</td>
+          <td>
+            <select bind:value={$character.Warrior1.style}>
+              {#each kungFuStyles as style, index}
+                <option value={style}>{style.name}</option>
+              {/each}
+              <option value={""}>None</option>
+            </select>
+          </td>
+          <td
+            ><input
+              type="number"
+              min="0"
+              max="6"
+              bind:value={$character.Warrior1.level}
+            /></td
+          >
+          <select bind:value={$character.Warrior1.relation}>
+            <option value={2}>Primary (+20)</option>
+            <option value={1}>Secondary (+10)</option>
+            <option value={0}>None</option>
+          </select>
+          <td
+            ><input
+              type="number"
+              disabled
+              value={$character.Warrior1MeleeScore}
+            /></td
+          >
+          <td
+            ><input
+              type="number"
+              disabled
+              value={$character.Warrior1RangedScore}
+            /></td
+          >
+        </tr>
       </tbody>
     </table>
 
@@ -109,80 +143,19 @@
           <th>%</th>
         </tr>
       </thead>
+
       <!-- prettier-ignore -->
       <tbody>
-
-		<SkillDisplay skill={$character.Alchemy} on:update={handleUpdate} />
-
-        <tr>
-          <td>Alchemy</td>          
-		  <td>LOG ({$character.LOG})</td>
-          <td><input type="number" bind:value={$character.Alchemy.level} /></td>
-          <td>
-			<select bind:value={$character.Alchemy.relation} >
-				<option value={2}>Primary (+20)</option>
-				<option value={1}>Secondary (+10)</option>
-				<option value={0}>None</option>
-			</select>	
-		  </td>
-          <td><input type="number" disabled value={$character.AlchemyScore} /></td>
-        </tr>
-        <tr>
-          <td>Detective</td>          
-		  <td>LOG ({$character.LOG})</td>
-          <td><input type="number" bind:value={$character.Detective.level} /></td>
-          <td></td>
-          <td><input type="number" disabled value={$character.DetectiveScore} /></td>
-        </tr>
-        <tr>
-          <td>Diviner</td>          
-		  <td>LOG ({$character.LOG})</td>
-          <td><input type="number" bind:value={$character.Diviner.level} /></td>
-          <td></td>
-          <td><input type="number" disabled value={$character.DivinerScore} /></td>
-        </tr>
-        <tr>
-          <td>Leader</td>          
-		  <td>WIL ({$character.WIL})</td>
-          <td><input type="number" bind:value={$character.Leader.level} /></td>
-          <td></td>
-          <td><input type="number" disabled value={$character.LeaderScore} /></td>
-        </tr>
-        <tr>
-          <td>Mystic</td>          
-		  <td>WIL ({$character.WIL})</td>
-          <td><input type="number" bind:value={$character.Mystic.level} /></td>
-          <td></td>
-          <td><input type="number" disabled value={$character.MysticScore} /></td>
-        </tr>
-        <tr>
-          <td>Scholar</td>          
-		  <td>LOG ({$character.LOG})</td>
-          <td><input type="number" bind:value={$character.Scholar.level} /></td>
-          <td></td>
-          <td><input type="number" disabled value={$character.ScholarScore} /></td>
-        </tr>
-        <tr>
-          <td>Scout</td>          
-		  <td>LOG ({$character.LOG})</td>
-          <td><input type="number" bind:value={$character.Scout.level} /></td>
-          <td></td>
-          <td><input type="number" disabled value={$character.ScoutScore} /></td>
-        </tr>
-        <tr>
-          <td>Sorcerer</td>          
-		  <td>WIL ({$character.WIL})</td>
-          <td><input type="number" bind:value={$character.Sorcerer.level} /></td>
-          <td></td>
-          <td><input type="number" disabled value={$character.SorcererScore} /></td>
-        </tr>
-        <tr>
-          <td>Thief</td>          
-		  <td>DEX ({$character.DEX})</td>
-          <td><input type="number" bind:value={$character.Thief.level} /></td>
-          <td></td>
-          <td><input type="number" disabled value={$character.ThiefScore} /></td>
-        </tr>
+		<SkillDisplay skill={$character.Warrior1} on:update={handleUpdate} score={$character.Warrior1MeleeScore} score2={$character.Warrior1RangedScore} />
+		<SkillDisplay skill={$character.Alchemy} base={$character.LOG} on:update={handleUpdate} score={$character.AlchemyScore} />
+        <SkillDisplay skill={$character.Detective} base={$character.LOG} on:update={handleUpdate} score={$character.DetectiveScore} />
+        <SkillDisplay skill={$character.Diviner} base={$character.LOG} on:update={handleUpdate} score={$character.DivinerScore} />
+        <SkillDisplay skill={$character.Leader} base={$character.WIL} on:update={handleUpdate} score={$character.LeaderScore} />
+        <SkillDisplay skill={$character.Mystic} base={$character.WIL} on:update={handleUpdate} score={$character.MysticScore} />
+        <SkillDisplay skill={$character.Scholar} base={$character.LOG} on:update={handleUpdate} score={$character.ScholarScore} />
+        <SkillDisplay skill={$character.Scout} base={$character.LOG} on:update={handleUpdate} score={$character.ScoutScore} />
+        <SkillDisplay skill={$character.Sorcerer} base={$character.WIL} on:update={handleUpdate} score={$character.SorcererScore} />
+        <SkillDisplay skill={$character.Thief} base={$character.DEX} on:update={handleUpdate} score={$character.ThiefScore} />
       </tbody>
     </table>
   </div>
