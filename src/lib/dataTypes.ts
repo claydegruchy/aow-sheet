@@ -32,19 +32,19 @@ export type WarriorScore = {
 	style: string;
 	level: number;
 	relation: relationRange;
+
 	meleeScore?: number; // Calculated based on STR
 	rangedScore?: number; // Calculated based on DEX
 };
 
-export type MoralCode = {
-	code: 'Kind' | 'Cruel' | 'Focused' | 'Unfocused' | 'Selfless' | 'Selfish' | 'Honorable' | 'Deceitful' | 'Brave' | 'Cowardly';
-	devotion: string;
-};
+export const moralCodes = ['Kind', 'Cruel', 'Focused', 'Unfocused', 'Selfless', 'Selfish', 'Honorable', 'Deceitful', 'Brave', 'Cowardly']
+
+
 
 export class AOWCharacterForm {
 	Name: string = "";
 	Description: string = "";
-	CP: number = 0;
+	CP: number = 10;
 	// rank is derived by the following formula
 	get Rank(): number {
 
@@ -57,22 +57,28 @@ export class AOWCharacterForm {
 	WIL: number = 0;
 
 	//derived
-	get BP(): number {
+
+	get BaseBP(): number {
 		return Math.round(this.STR / 2) + Math.max(0, (10 * (this.Rank - 1)))
 	}
-
+	BP: number = this.BaseBP
 
 	Qi: number = 0;
 
-	//derived 
-	// MOV (see movement page 57) begins at 8, add +1 if your STR is 65 or higher, add +1 if your DEX is 65 or higher. Apply your armor penalty, if any.
-
 	get MOV(): number {
+		// MOV (see movement page 57) begins at 8, add +1 if your STR is 65 or higher, add +1 if your DEX is 65 or higher. Apply your armor penalty, if any.
 		let mov = 8
 		if (this.STR >= 65) mov += 1;
 		if (this.DEX >= 65) mov += 1;
 
 		return mov
+	}
+	get INIT(): number {
+		// Initiative (INIT) starts at 1. Add +1 if your LOG is 65 or greater, add an additional +1 if your DEX is 65 or greater.
+		let init = 1
+		if (this.LOG >= 65) init += 1;
+		if (this.DEX >= 65) init += 1;
+		return init
 	}
 
 	DR: number = 0;
@@ -117,17 +123,19 @@ export class AOWCharacterForm {
 	get Warrior2MeleeScore(): number { return this.getSkillScore(this.Warrior2, this.STR); }
 
 
-	// MoralCodes: MoralCode[] = [
-	// 	{ code: "Kind", devotion: "" },
-	// 	{ code: "Focused", devotion: "" },
-	// 	{ code: "Selfless", devotion: "" },
-	// 	{ code: "Honorable", devotion: "" },
-	// 	{ code: "Brave", devotion: "" }
-	// ];
+
+	MoralCodes = {
+		Totally: -1,
+		Somewhat: -1,
+		Very: -1
+	}
+
+	learnedTechniques: string[] = []
+
 	// Abilities: string[] = new Array(16).fill("");
 	// Gear: string[] = new Array(16).fill("");
-	INIT: number = 1;
-	MOV: string = "";
+	// INIT: number = 1;
+	// MOV: string = "";
 	// MeleeDamageModifier: string = "";
 	// RangedDamageModifier: string = "";
 	// Appearance: string = "";

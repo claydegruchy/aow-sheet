@@ -1,8 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import type { SkillScore, AOWCharacterForm, KungFuStyle } from "./dataTypes";
-  import { kungFuStyles } from "./dataTypes";
+  import type {
+    SkillScore,
+    AOWCharacterForm,
+    KungFuStyle,
+    techniques,
+  } from "./dataTypes";
+  import { kungFuStyles, moralCodes } from "./dataTypes";
   import SkillDisplay from "./SkillDisplay.svelte";
+  import SimpleCard from "./SimpleCard.svelte";
 
   export let character;
 
@@ -11,127 +17,166 @@
     console.log(event.detail);
     $character[skill.name] = value;
   }
+
+  let spendingCP = true;
+  //   $: $character.CP, $character.CP <= 0 ? (spendingCP = false) : "";
+
+  function toggleSpendCp() {
+    spendingCP = !spendingCP;
+  }
+
+  //   auto update bp on hp max change
+  //   $: $character.BaseBP, ($character.BP = $character.BaseBP);
 </script>
 
 <div class="character-form">
   <h2>Character Sheet</h2>
+  <button on:click={toggleSpendCp}>
+    {spendingCP ? "Stop Spending" : "Spend CP"}
+  </button>
   <div class="top-level-stats">
     <h3>Basics</h3>
-    <label>
-      Name:
-      <input type="text" bind:value={$character.name} />
-    </label>
-    <label>
-      Description:
-      <textarea bind:value={$character.Description} />
-    </label>
-    <label>
-      CP:
-      <input type="text" bind:value={$character.CP} />
-    </label>
-    <label>
-      Rank:
-      <input type="text" value={$character.Rank} />
-    </label>
+    <div>
+      <label>
+        Name:
+        <input type="text" bind:value={$character.name} />
+      </label>
+    </div>
+    <div>
+      <label>
+        Description:
+        <textarea bind:value={$character.Description} />
+      </label>
+    </div>
+    <div>
+      <label>
+        CP:
+        <input
+          type="number"
+          min="0"
+          max="999"
+          disabled
+          bind:value={$character.CP}
+        />
+      </label>
+    </div>
+    <div>
+      <label>
+        Rank:
+        <input
+          type="number"
+          min="0"
+          max="999"
+          disabled
+          value={$character.Rank}
+        />
+      </label>
+    </div>
+  </div>
+
+  <div class="morals">
+    <h3>Morals</h3>
+
+    {#each ["Totally", "Very", "Somewhat"] as devotion, idx}
+      <div>
+        {devotion}
+        <select bind:value={$character.MoralCodes[devotion]}>
+          <option value={-1}>-</option>
+          {#each moralCodes as moral, index}
+            <option value={index}>{moral}</option>
+          {/each}
+        </select>
+      </div>
+    {/each}
   </div>
 
   <div class="secondary-stats">
     <h3>Secondary Stats</h3>
-    <label>
-      BP:
-      <input type="text" value={$character.BP} />
-    </label>
+    <div>
+      <label>
+        BP:
+        <input type="number" min="0" max="999" value={$character.BP} />
+        <a on:click={() => ($character.BP = $character.BaseBP)}>Reset</a>
+      </label>
+    </div>
 
-    <label>
-      DR:
-      <input type="text" value={$character.DR} />
-    </label>
+    <div>
+      <label>
+        DR:
+        <input type="number" min="0" max="999" disabled value={$character.DR} />
+      </label>
+    </div>
 
-    <label>
-      Qi:
-      <input type="text" bind:value={$character.Qi} />
-    </label>
+    <div>
+      <label>
+        Qi:
+        <input type="number" min="0" max="999" bind:value={$character.Qi} />
+      </label>
+    </div>
+  </div>
+
+  <div class="tertiary-stats">
+    <h3>tertiary stats</h3>
+
+    <div>
+      <label>
+        INIT:
+        <input
+          type="number"
+          min="0"
+          max="999"
+          disabled
+          bind:value={$character.INIT}
+        />
+      </label>
+    </div>
+    <div>
+      <label>
+        MOV:
+        <input
+          type="number"
+          min="0"
+          max="999"
+          disabled
+          bind:value={$character.MOV}
+        />
+      </label>
+    </div>
   </div>
 
   <div class="ability-scores">
     <h3>Ability Scores</h3>
-    <label>
-      STR:
-      <input type="number" bind:value={$character.STR} />
-    </label>
+    <div>
+      <label>
+        STR:
+        <input type="number" min="0" max="999" bind:value={$character.STR} />
+      </label>
+    </div>
 
-    <label>
-      DEX:
-      <input type="number" bind:value={$character.DEX} />
-    </label>
+    <div>
+      <label>
+        DEX:
+        <input type="number" min="0" max="999" bind:value={$character.DEX} />
+      </label>
+    </div>
 
-    <label>
-      LOG:
-      <input type="number" bind:value={$character.LOG} />
-    </label>
+    <div>
+      <label>
+        LOG:
+        <input type="number" min="0" max="999" bind:value={$character.LOG} />
+      </label>
+    </div>
 
-    <label>
-      WIL:
-      <input type="number" bind:value={$character.WIL} />
-    </label>
+    <div>
+      <label>
+        WIL:
+        <input type="number" min="0" max="999" bind:value={$character.WIL} />
+      </label>
+    </div>
   </div>
 
   <div class="skill-scores">
     <h3>Skill Scores</h3>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Style</th>
-
-          <th>Level</th>
-          <th>PS</th>
-          <th>Melee (STR {$character.STR}) %</th>
-          <th>Ranged (DEX {$character.DEX}) %</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Warrior of the {$character.Warrior1.style.name}</td>
-          <td>
-            <select bind:value={$character.Warrior1.style}>
-              {#each kungFuStyles as style, index}
-                <option value={style}>{style.name}</option>
-              {/each}
-              <option value={""}>None</option>
-            </select>
-          </td>
-          <td
-            ><input
-              type="number"
-              min="0"
-              max="6"
-              bind:value={$character.Warrior1.level}
-            /></td
-          >
-          <select bind:value={$character.Warrior1.relation}>
-            <option value={2}>Primary (+20)</option>
-            <option value={1}>Secondary (+10)</option>
-            <option value={0}>None</option>
-          </select>
-          <td
-            ><input
-              type="number"
-              disabled
-              value={$character.Warrior1MeleeScore}
-            /></td
-          >
-          <td
-            ><input
-              type="number"
-              disabled
-              value={$character.Warrior1RangedScore}
-            /></td
-          >
-        </tr>
-      </tbody>
-    </table>
 
     <table>
       <thead>
@@ -146,7 +191,6 @@
 
       <!-- prettier-ignore -->
       <tbody>
-		<SkillDisplay skill={$character.Warrior1} on:update={handleUpdate} score={$character.Warrior1MeleeScore} score2={$character.Warrior1RangedScore} />
 		<SkillDisplay skill={$character.Alchemy} base={$character.LOG} on:update={handleUpdate} score={$character.AlchemyScore} />
         <SkillDisplay skill={$character.Detective} base={$character.LOG} on:update={handleUpdate} score={$character.DetectiveScore} />
         <SkillDisplay skill={$character.Diviner} base={$character.LOG} on:update={handleUpdate} score={$character.DivinerScore} />
@@ -158,5 +202,173 @@
         <SkillDisplay skill={$character.Thief} base={$character.DEX} on:update={handleUpdate} score={$character.ThiefScore} />
       </tbody>
     </table>
+
+    <div>
+      <section>
+        <div>
+          Warrior of the
+          <select bind:value={$character.Warrior1.style}>
+            <option value={""}>Not selected</option>
+            {#each kungFuStyles as style, index}
+              <option value={style}>{style.name}</option>
+            {/each}
+          </select>
+          style
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Base Ability</th>
+              <th>Level</th>
+              <th>Relation</th>
+              <th> %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="2">Warrior 1</td>
+              <td>Melee (STR {$character.STR})</td>
+              <td rowspan="2"
+                ><input
+                  type="number"
+                  min="0"
+                  max="6"
+                  bind:value={$character.Warrior1.level}
+                /></td
+              >
+              <td rowspan="2">
+                <select bind:value={$character.Warrior1.relation}>
+                  <option value={2}>Primary (+20)</option>
+                  <option value={1}>Secondary (+10)</option>
+                  <option value={0}>None</option>
+                </select>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  disabled
+                  value={$character.Warrior1MeleeScore}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Ranged (DEX {$character.DEX})</td>
+              <input
+                type="number"
+                disabled
+                value={$character.Warrior1RangedScore}
+              />
+            </tr>
+            <tr> </tr>
+            <tr></tr>
+          </tbody>
+        </table>
+        {#if $character.Warrior1.style}
+          <div>
+            <h4>
+              Techniques of {$character.Warrior1.style.name} style ({$character
+                .learnedTechniques.length} known)
+            </h4>
+            <div style="">
+              {#each $character.Warrior1.style.techniques as technique, index}
+                {#if $character.learnedTechniques?.includes(technique.name)}
+                  <SimpleCard class="red" {...technique} />
+                {:else}
+                  <!--  -->
+                  {#if spendingCP}
+                    <span
+                      on:click={() => {
+                        $character.learnedTechniques.push(technique.name);
+                        console.log(
+                          technique.name,
+                          $character.learnedTechniques
+                        );
+                      }}
+                    >
+                      <SimpleCard class="learning" {...technique} />
+                    </span>
+                  {/if}
+                  <!--  -->
+                {/if}
+              {/each}
+            </div>
+          </div>
+        {/if}
+      </section>
+      <section>
+        <div>
+          Warrior of the
+          <select bind:value={$character.Warrior2.style}>
+            <option value={""}>Not selected</option>
+            {#each kungFuStyles as style, index}
+              <option value={style}>{style.name}</option>
+            {/each}
+          </select>
+          style
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Base Ability</th>
+              <th>Level</th>
+              <th>Relation</th>
+              <th> %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="2">Warrior 2</td>
+              <td>Melee (STR {$character.STR})</td>
+              <td rowspan="2"
+                ><input
+                  type="number"
+                  min="0"
+                  max="6"
+                  bind:value={$character.Warrior2.level}
+                /></td
+              >
+              <td rowspan="2">
+                <select bind:value={$character.Warrior2.relation}>
+                  <option value={2}>Primary (+20)</option>
+                  <option value={1}>Secondary (+10)</option>
+                  <option value={0}>None</option>
+                </select>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  disabled
+                  value={$character.Warrior2MeleeScore}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Ranged (DEX {$character.DEX})</td>
+              <input
+                type="number"
+                disabled
+                value={$character.Warrior2RangedScore}
+              />
+            </tr>
+            <tr> </tr>
+            <tr></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
   </div>
+
+  <div class="talents-spells-abilities"></div>
+  <div class="equipment"></div>
 </div>
+
+<style>
+  input[type="checkbox"] {
+    display: none;
+  }
+  .red {
+    color: #ff0000;
+  }
+</style>
