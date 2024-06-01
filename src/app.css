@@ -47,13 +47,13 @@ h1 {
 }
 
 .card {
-  padding: 2em;
-  margin: 1em;
+  /* padding: 2em; */
+  /* margin: 1em; */
   /* background-color: rgba(0, 0, 0, 0.7); */
   /* Semi-transparent background for cards */
-  border: 1px solid #FFD700;
+  /* border: 1px solid #FFD700; */
   /* Gold border */
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 
 #app {

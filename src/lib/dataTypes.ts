@@ -42,15 +42,60 @@ export const moralCodes = ['Kind', 'Cruel', 'Focused', 'Unfocused', 'Selfless', 
 
 
 export class AOWCharacterForm {
+
+	// skills
+	Alchemy: SkillScore = { name: "Alchemy", baseAbility: "LOG", level: 0, relation: 0, };
+	Detective: SkillScore = { name: "Detective", baseAbility: "LOG", level: 0, relation: 0 };
+	Diviner: SkillScore = { name: "Diviner", baseAbility: "LOG", level: 0, relation: 0 };
+	Leader: SkillScore = { name: "Leader", baseAbility: "WIL", level: 0, relation: 0 };
+	Mystic: SkillScore = { name: "Mystic", baseAbility: "WIL", level: 0, relation: 0 };
+	Scholar: SkillScore = { name: "Scholar", baseAbility: "LOG", level: 0, relation: 0 };
+	Scout: SkillScore = { name: "Scout", baseAbility: "LOG", level: 0, relation: 0 };
+	Sorcerer: SkillScore = { name: "Sorcerer", baseAbility: "WIL", level: 0, relation: 0 };
+	Thief: SkillScore = { name: "Thief", baseAbility: "DEX", level: 0, relation: 0 };
+	Warrior1: WarriorScore = { name: "Warrior1", style: "", level: 0, relation: 0 };
+	Warrior2: WarriorScore = { name: "Warrior2", style: "", level: 0, relation: 0 };
+
+
 	Name: string = "";
 	Description: string = "";
 	CP: number = 10;
 	// rank is derived by the following formula
 	get Rank(): number {
+		let rank = 0
 
-		return 0
+
+		let sk = [this.Alchemy.level,
+		this.Detective.level,
+		this.Diviner.level,
+		this.Leader.level,
+		this.Mystic.level,
+		this.Scholar.level,
+		this.Scout.level,
+		this.Sorcerer.level,
+		this.Thief.level,
+		this.Warrior1.level,
+		this.Warrior2.level].sort()
+		console.log({ sk })
+		// Highest Skill Level
+		if (sk[0] > 2) rank += 1
+		if (sk[0] > 4) rank += 1
+		if (sk[0] == 6) rank += 1
+		// Second Highest Skill Level
+		if (sk[1] > 3) rank += 1
+		if (sk[1] == 6) rank += 1
+
+
+
+		// Highest Ability Score
+		if (Math.max(this.STR, this.DEX, this.LOG, this.WIL) >= 50) rank += 1
+		if (Math.max(this.STR, this.DEX, this.LOG, this.WIL) >= 100) rank += 1
+
+
+
+		return rank
 	};
-	// main skills
+	// main abilitiesƒ
 	STR: number = 0;
 	DEX: number = 0;
 	LOG: number = 0;
@@ -90,18 +135,7 @@ export class AOWCharacterForm {
 		return stat / 2 + ability.level * 10 + ability.relation * 10;
 	};
 
-	// skills
-	Alchemy: SkillScore = { name: "Alchemy", baseAbility: "LOG", level: 0, relation: 0, };
-	Detective: SkillScore = { name: "Detective", baseAbility: "LOG", level: 0, relation: 0 };
-	Diviner: SkillScore = { name: "Diviner", baseAbility: "LOG", level: 0, relation: 0 };
-	Leader: SkillScore = { name: "Leader", baseAbility: "WIL", level: 0, relation: 0 };
-	Mystic: SkillScore = { name: "Mystic", baseAbility: "WIL", level: 0, relation: 0 };
-	Scholar: SkillScore = { name: "Scholar", baseAbility: "LOG", level: 0, relation: 0 };
-	Scout: SkillScore = { name: "Scout", baseAbility: "LOG", level: 0, relation: 0 };
-	Sorcerer: SkillScore = { name: "Sorcerer", baseAbility: "WIL", level: 0, relation: 0 };
-	Thief: SkillScore = { name: "Thief", baseAbility: "DEX", level: 0, relation: 0 };
-	Warrior1: WarriorScore = { name: "Warrior1", style: "", level: 0, relation: 0 };
-	Warrior2: WarriorScore = { name: "Warrior2", style: "", level: 0, relation: 0 };
+
 
 
 

@@ -18,12 +18,22 @@
     $character[skill.name] = value;
   }
 
-  let spendingCP = true;
-  //   $: $character.CP, $character.CP <= 0 ? (spendingCP = false) : "";
-
-  function toggleSpendCp() {
-    spendingCP = !spendingCP;
+  let showUnknownTechniques = false;
+  function toggleShowUnknownTechniques() {
+    showUnknownTechniques = !showUnknownTechniques;
   }
+
+  function toggleTechnique(name: string) {
+    $character.learnedTechniques.push(name);
+    $character = $character;
+  }
+
+  //   let spendingCP = true;
+  //   //   $: $character.CP, $character.CP <= 0 ? (spendingCP = false) : "";
+
+  //   function toggleSpendCp() {
+  //     spendingCP = !spendingCP;
+  //   }
 
   //   auto update bp on hp max change
   //   $: $character.BaseBP, ($character.BP = $character.BaseBP);
@@ -31,9 +41,9 @@
 
 <div class="character-form">
   <h2>Character Sheet</h2>
-  <button on:click={toggleSpendCp}>
+  <!-- <button on:click={toggleSpendCp}>
     {spendingCP ? "Stop Spending" : "Spend CP"}
-  </button>
+  </button> -->
   <div class="top-level-stats">
     <h3>Basics</h3>
     <div>
@@ -267,27 +277,24 @@
         {#if $character.Warrior1.style}
           <div>
             <h4>
-              Techniques of {$character.Warrior1.style.name} style ({$character
-                .learnedTechniques.length} known)
+              Techniques of the {$character.Warrior1.style.name} style
             </h4>
-            <div style="">
+            <button on:click={toggleShowUnknownTechniques}
+              >{showUnknownTechniques ? "Hide" : "Show"} unlearned techniques</button
+            >
+            <div class="techniques-list">
               {#each $character.Warrior1.style.techniques as technique, index}
                 {#if $character.learnedTechniques?.includes(technique.name)}
                   <SimpleCard class="red" {...technique} />
                 {:else}
                   <!--  -->
-                  {#if spendingCP}
-                    <span
-                      on:click={() => {
-                        $character.learnedTechniques.push(technique.name);
-                        console.log(
-                          technique.name,
-                          $character.learnedTechniques
-                        );
-                      }}
-                    >
-                      <SimpleCard class="learning" {...technique} />
-                    </span>
+                  {#if showUnknownTechniques}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-missing-attribute -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <a on:click={() => toggleTechnique(technique.name)}>
+                      <SimpleCard class="wiggle" {...technique} />
+                    </a>
                   {/if}
                   <!--  -->
                 {/if}
@@ -356,6 +363,35 @@
             <tr></tr>
           </tbody>
         </table>
+
+        {#if $character.Warrior1.style}
+          <div>
+            <h4>
+              Techniques of the {$character.Warrior1.style.name} style
+            </h4>
+            <button on:click={toggleShowUnknownTechniques}
+              >{showUnknownTechniques ? "Hide" : "Show"} unlearned techniques</button
+            >
+            <div class="techniques-list">
+              {#each $character.Warrior1.style.techniques as technique, index}
+                {#if $character.learnedTechniques?.includes(technique.name)}
+                  <SimpleCard class="red" {...technique} />
+                {:else}
+                  <!--  -->
+                  {#if showUnknownTechniques}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-missing-attribute -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <a on:click={() => toggleTechnique(technique.name)}>
+                      <SimpleCard class="wiggle" {...technique} />
+                    </a>
+                  {/if}
+                  <!--  -->
+                {/if}
+              {/each}
+            </div>
+          </div>
+        {/if}
       </section>
     </div>
   </div>
@@ -365,6 +401,12 @@
 </div>
 
 <style>
+  .techniques-list {
+    display: flex;
+    flex-direction: row;
+    /* wrap */
+    flex-wrap: wrap;
+  }
   input[type="checkbox"] {
     display: none;
   }
