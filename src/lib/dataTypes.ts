@@ -60,7 +60,8 @@ export class AOWCharacterForm {
 	Name: string = "";
 	Description: string = "";
 	CP: number = 10;
-	// rank is derived by the following formula
+
+	// rank is derived
 	get Rank(): number {
 		let rank = 0
 
@@ -75,8 +76,7 @@ export class AOWCharacterForm {
 		this.Sorcerer.level,
 		this.Thief.level,
 		this.Warrior1.level,
-		this.Warrior2.level].sort()
-		console.log({ sk })
+		this.Warrior2.level].sort().reverse()
 		// Highest Skill Level
 		if (sk[0] > 2) rank += 1
 		if (sk[0] > 4) rank += 1
@@ -90,7 +90,6 @@ export class AOWCharacterForm {
 		// Highest Ability Score
 		if (Math.max(this.STR, this.DEX, this.LOG, this.WIL) >= 50) rank += 1
 		if (Math.max(this.STR, this.DEX, this.LOG, this.WIL) >= 100) rank += 1
-
 
 
 		return rank
@@ -165,6 +164,8 @@ export class AOWCharacterForm {
 	}
 
 	learnedTechniques: string[] = []
+	spells: string[] = []
+
 
 	// Abilities: string[] = new Array(16).fill("");
 	// Gear: string[] = new Array(16).fill("");

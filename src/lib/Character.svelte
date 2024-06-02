@@ -1,15 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import type {
-    SkillScore,
-    AOWCharacterForm,
-    KungFuStyle,
-    techniques,
-  } from "./dataTypes";
-  import { kungFuStyles, moralCodes } from "./dataTypes";
+  import type { SkillScore, AOWCharacterForm, KungFuStyle } from "./dataTypes";
+  import { kungFuStyles, moralCodes, techniques } from "./dataTypes";
   import SkillDisplay from "./SkillDisplay.svelte";
   import SimpleCard from "./SimpleCard.svelte";
-
+  import WarriorSkillDisplay from "./WarriorSkillDisplay.svelte";
   export let character;
 
   function handleUpdate(event) {
@@ -201,202 +196,43 @@
 
       <!-- prettier-ignore -->
       <tbody>
-		<SkillDisplay skill={$character.Alchemy} base={$character.LOG} on:update={handleUpdate} score={$character.AlchemyScore} />
-        <SkillDisplay skill={$character.Detective} base={$character.LOG} on:update={handleUpdate} score={$character.DetectiveScore} />
-        <SkillDisplay skill={$character.Diviner} base={$character.LOG} on:update={handleUpdate} score={$character.DivinerScore} />
-        <SkillDisplay skill={$character.Leader} base={$character.WIL} on:update={handleUpdate} score={$character.LeaderScore} />
-        <SkillDisplay skill={$character.Mystic} base={$character.WIL} on:update={handleUpdate} score={$character.MysticScore} />
-        <SkillDisplay skill={$character.Scholar} base={$character.LOG} on:update={handleUpdate} score={$character.ScholarScore} />
-        <SkillDisplay skill={$character.Scout} base={$character.LOG} on:update={handleUpdate} score={$character.ScoutScore} />
-        <SkillDisplay skill={$character.Sorcerer} base={$character.WIL} on:update={handleUpdate} score={$character.SorcererScore} />
-        <SkillDisplay skill={$character.Thief} base={$character.DEX} on:update={handleUpdate} score={$character.ThiefScore} />
+		<SkillDisplay on:update={handleUpdate} {character} skill={$character.Alchemy}/>
+        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Detective}/>
+        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Diviner}/>
+        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Leader}/>
+        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Mystic}/>
+        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Scholar}/>
+        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Scout} />
+        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Sorcerer}/>
+        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Thief} />
       </tbody>
     </table>
-
+    <!-- prettier-ignore -->
     <div>
       <section>
-        <div>
-          Warrior of the
-          <select bind:value={$character.Warrior1.style}>
-            <option value={""}>Not selected</option>
-            {#each kungFuStyles as style, index}
-              <option value={style}>{style.name}</option>
-            {/each}
-          </select>
-          style
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Base Ability</th>
-              <th>Level</th>
-              <th>Relation</th>
-              <th> %</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td rowspan="2">Warrior 1</td>
-              <td>Melee (STR {$character.STR})</td>
-              <td rowspan="2"
-                ><input
-                  type="number"
-                  min="0"
-                  max="6"
-                  bind:value={$character.Warrior1.level}
-                /></td
-              >
-              <td rowspan="2">
-                <select bind:value={$character.Warrior1.relation}>
-                  <option value={2}>Primary (+20)</option>
-                  <option value={1}>Secondary (+10)</option>
-                  <option value={0}>None</option>
-                </select>
-              </td>
-              <td>
-                <input
-                  type="number"
-                  disabled
-                  value={$character.Warrior1MeleeScore}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Ranged (DEX {$character.DEX})</td>
-              <input
-                type="number"
-                disabled
-                value={$character.Warrior1RangedScore}
-              />
-            </tr>
-            <tr> </tr>
-            <tr></tr>
-          </tbody>
-        </table>
-        {#if $character.Warrior1.style}
-          <div>
-            <h4>
-              Techniques of the {$character.Warrior1.style.name} style
-            </h4>
-            <button on:click={toggleShowUnknownTechniques}
-              >{showUnknownTechniques ? "Hide" : "Show"} unlearned techniques</button
-            >
-            <div class="techniques-list">
-              {#each $character.Warrior1.style.techniques as technique, index}
-                {#if $character.learnedTechniques?.includes(technique.name)}
-                  <SimpleCard class="red" {...technique} />
-                {:else}
-                  <!--  -->
-                  {#if showUnknownTechniques}
-                    <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <!-- svelte-ignore a11y-missing-attribute -->
-                    <!-- svelte-ignore a11y-no-static-element-interactions -->
-                    <a on:click={() => toggleTechnique(technique.name)}>
-                      <SimpleCard class="wiggle" {...technique} />
-                    </a>
-                  {/if}
-                  <!--  -->
-                {/if}
-              {/each}
-            </div>
-          </div>
-        {/if}
-      </section>
-      <section>
-        <div>
-          Warrior of the
-          <select bind:value={$character.Warrior2.style}>
-            <option value={""}>Not selected</option>
-            {#each kungFuStyles as style, index}
-              <option value={style}>{style.name}</option>
-            {/each}
-          </select>
-          style
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Base Ability</th>
-              <th>Level</th>
-              <th>Relation</th>
-              <th> %</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td rowspan="2">Warrior 2</td>
-              <td>Melee (STR {$character.STR})</td>
-              <td rowspan="2"
-                ><input
-                  type="number"
-                  min="0"
-                  max="6"
-                  bind:value={$character.Warrior2.level}
-                /></td
-              >
-              <td rowspan="2">
-                <select bind:value={$character.Warrior2.relation}>
-                  <option value={2}>Primary (+20)</option>
-                  <option value={1}>Secondary (+10)</option>
-                  <option value={0}>None</option>
-                </select>
-              </td>
-              <td>
-                <input
-                  type="number"
-                  disabled
-                  value={$character.Warrior2MeleeScore}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Ranged (DEX {$character.DEX})</td>
-              <input
-                type="number"
-                disabled
-                value={$character.Warrior2RangedScore}
-              />
-            </tr>
-            <tr> </tr>
-            <tr></tr>
-          </tbody>
-        </table>
-
-        {#if $character.Warrior1.style}
-          <div>
-            <h4>
-              Techniques of the {$character.Warrior1.style.name} style
-            </h4>
-            <button on:click={toggleShowUnknownTechniques}
-              >{showUnknownTechniques ? "Hide" : "Show"} unlearned techniques</button
-            >
-            <div class="techniques-list">
-              {#each $character.Warrior1.style.techniques as technique, index}
-                {#if $character.learnedTechniques?.includes(technique.name)}
-                  <SimpleCard class="red" {...technique} />
-                {:else}
-                  <!--  -->
-                  {#if showUnknownTechniques}
-                    <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <!-- svelte-ignore a11y-missing-attribute -->
-                    <!-- svelte-ignore a11y-no-static-element-interactions -->
-                    <a on:click={() => toggleTechnique(technique.name)}>
-                      <SimpleCard class="wiggle" {...technique} />
-                    </a>
-                  {/if}
-                  <!--  -->
-                {/if}
-              {/each}
-            </div>
-          </div>
-        {/if}
+        <WarriorSkillDisplay on:update={handleUpdate} {character} skill={$character.Warrior1} />
+        <WarriorSkillDisplay on:update={handleUpdate} {character} skill={$character.Warrior2} />
       </section>
     </div>
   </div>
 
-  <div class="talents-spells-abilities"></div>
+  <div class="talents-spells-abilities">
+    <h4>Techniques</h4>
+    <div>
+      {#each techniques as technique, index}
+        {#if $character.Warrior1.style?.techniques?.includes(technique.name)}
+          <SimpleCard class="red" {...technique} />
+        {/if}
+      {/each}
+    </div>
+    <h4>Spells</h4>
+    <div>
+      {#each $character.spells as spell, index}
+        {spell}
+      {/each}
+    </div>
+  </div>
+
   <div class="equipment"></div>
 </div>
 
