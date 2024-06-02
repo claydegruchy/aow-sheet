@@ -1,10 +1,20 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import type { SkillScore, AOWCharacterForm, KungFuStyle } from "./dataTypes";
-  import { kungFuStyles, moralCodes, techniques } from "./dataTypes";
+  import {
+    kungFuStyles,
+    moralCodes,
+    techniques,
+    spells,
+    equipment,
+    armour,
+    weapons,
+  } from "./dataTypes";
   import SkillDisplay from "./SkillDisplay.svelte";
   import SimpleCard from "./SimpleCard.svelte";
   import WarriorSkillDisplay from "./WarriorSkillDisplay.svelte";
+  import SpellCard from "./SpellCard.svelte";
+  import ItemCard from "./ItemCard.svelte";
   export let character;
 
   function handleUpdate(event) {
@@ -13,38 +23,21 @@
     $character[skill.name] = value;
   }
 
-  let showUnknownTechniques = false;
-  function toggleShowUnknownTechniques() {
-    showUnknownTechniques = !showUnknownTechniques;
-  }
-
-  function toggleTechnique(name: string) {
-    $character.learnedTechniques.push(name);
-    $character = $character;
-  }
-
-  //   let spendingCP = true;
-  //   //   $: $character.CP, $character.CP <= 0 ? (spendingCP = false) : "";
-
-  //   function toggleSpendCp() {
-  //     spendingCP = !spendingCP;
-  //   }
-
-  //   auto update bp on hp max change
-  //   $: $character.BaseBP, ($character.BP = $character.BaseBP);
+  let lockSheet = false;
 </script>
 
 <div class="character-form">
-  <h2>Character Sheet</h2>
-  <!-- <button on:click={toggleSpendCp}>
-    {spendingCP ? "Stop Spending" : "Spend CP"}
-  </button> -->
+  <h1>Character Sheet</h1>
+  <label
+    >Lock Sheet
+    <input type="checkbox" bind:checked={lockSheet} />
+  </label>
   <div class="top-level-stats">
-    <h3>Basics</h3>
+    <h2>Basics</h2>
     <div>
       <label>
         Name:
-        <input type="text" bind:value={$character.name} />
+        <input disabled={lockSheet} type="text" bind:value={$character.name} />
       </label>
     </div>
     <div>
@@ -80,7 +73,7 @@
   </div>
 
   <div class="morals">
-    <h3>Morals</h3>
+    <h2>Morals</h2>
 
     {#each ["Totally", "Very", "Somewhat"] as devotion, idx}
       <div>
@@ -96,11 +89,17 @@
   </div>
 
   <div class="secondary-stats">
-    <h3>Secondary Stats</h3>
+    <h2>Secondary Stats</h2>
     <div>
       <label>
         BP:
-        <input type="number" min="0" max="999" value={$character.BP} />
+        <input
+          disabled={lockSheet}
+          type="number"
+          min="0"
+          max="999"
+          value={$character.BP}
+        />
         <a on:click={() => ($character.BP = $character.BaseBP)}>Reset</a>
       </label>
     </div>
@@ -115,13 +114,19 @@
     <div>
       <label>
         Qi:
-        <input type="number" min="0" max="999" bind:value={$character.Qi} />
+        <input
+          disabled={lockSheet}
+          type="number"
+          min="0"
+          max="999"
+          bind:value={$character.Qi}
+        />
       </label>
     </div>
   </div>
 
   <div class="tertiary-stats">
-    <h3>tertiary stats</h3>
+    <h2>tertiary stats</h2>
 
     <div>
       <label>
@@ -150,38 +155,62 @@
   </div>
 
   <div class="ability-scores">
-    <h3>Ability Scores</h3>
+    <h2>Ability Scores</h2>
     <div>
       <label>
         STR:
-        <input type="number" min="0" max="999" bind:value={$character.STR} />
+        <input
+          disabled={lockSheet}
+          type="number"
+          min="0"
+          max="999"
+          bind:value={$character.STR}
+        />
       </label>
     </div>
 
     <div>
       <label>
         DEX:
-        <input type="number" min="0" max="999" bind:value={$character.DEX} />
+        <input
+          disabled={lockSheet}
+          type="number"
+          min="0"
+          max="999"
+          bind:value={$character.DEX}
+        />
       </label>
     </div>
 
     <div>
       <label>
         LOG:
-        <input type="number" min="0" max="999" bind:value={$character.LOG} />
+        <input
+          disabled={lockSheet}
+          type="number"
+          min="0"
+          max="999"
+          bind:value={$character.LOG}
+        />
       </label>
     </div>
 
     <div>
       <label>
         WIL:
-        <input type="number" min="0" max="999" bind:value={$character.WIL} />
+        <input
+          disabled={lockSheet}
+          type="number"
+          min="0"
+          max="999"
+          bind:value={$character.WIL}
+        />
       </label>
     </div>
   </div>
 
   <div class="skill-scores">
-    <h3>Skill Scores</h3>
+    <h2>Skill Scores</h2>
 
     <table>
       <thead>
@@ -196,44 +225,117 @@
 
       <!-- prettier-ignore -->
       <tbody>
-		<SkillDisplay on:update={handleUpdate} {character} skill={$character.Alchemy}/>
-        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Detective}/>
-        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Diviner}/>
-        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Leader}/>
-        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Mystic}/>
-        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Scholar}/>
-        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Scout} />
-        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Sorcerer}/>
-        <SkillDisplay on:update={handleUpdate} {character} skill={$character.Thief} />
+		<SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Alchemy}/>
+        <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Detective}/>
+        <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Diviner}/>
+        <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Leader}/>
+        <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Mystic}/>
+        <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Scholar}/>
+        <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Scout} />
+        <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Sorcerer}/>
+        <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Thief} />
       </tbody>
     </table>
     <!-- prettier-ignore -->
     <div>
       <section>
-        <WarriorSkillDisplay on:update={handleUpdate} {character} skill={$character.Warrior1} />
-        <WarriorSkillDisplay on:update={handleUpdate} {character} skill={$character.Warrior2} />
+        <WarriorSkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Warrior1} />
+        <WarriorSkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Warrior2} />
       </section>
     </div>
   </div>
 
   <div class="talents-spells-abilities">
-    <h4>Techniques</h4>
+    <h3>Techniques</h3>
+    {#if !lockSheet}
+      <select multiple bind:value={$character.learnedTechniques}>
+        {#each techniques as technique, index}
+          {#if $character.allowedTechniques.includes(technique)}
+            <option value={technique.name}>{technique.name} </option>
+          {/if}
+        {/each}
+      </select>
+    {/if}
     <div>
       {#each techniques as technique, index}
-        {#if $character.Warrior1.style?.techniques?.includes(technique.name)}
+        {#if $character.learnedTechniques.includes(technique.name)}
           <SimpleCard class="red" {...technique} />
         {/if}
       {/each}
     </div>
-    <h4>Spells</h4>
+    <h3>Spells</h3>
+    {#if !lockSheet}
+      <select multiple bind:value={$character.spells}>
+        {#each spells as spell, index}
+          <option value={spell.name}>{spell.name}</option>
+        {/each}
+      </select>
+    {/if}
     <div>
-      {#each $character.spells as spell, index}
-        {spell}
+      {#each spells as spell, index}
+        {#if $character.spells.includes(spell.name)}
+          <SpellCard {...spell} />
+        {/if}
       {/each}
     </div>
   </div>
 
-  <div class="equipment"></div>
+  <div class="equipment">
+    <h3>equipment</h3>
+    {#if !lockSheet}
+      <select multiple bind:value={$character.equipment}>
+        {#each [...new Set(equipment.reduce((a, c) => [...a, c.itemType], []))] as type, i}
+          <optgroup label={type}>
+            {#each equipment.filter((e) => e.itemType == type) as g, index}
+              <option value={g.name}>[{g.cost}]{g.name}</option>
+            {/each}
+          </optgroup>
+        {/each}
+      </select>
+    {/if}
+
+    {#each equipment as x, i}
+      {#if $character.equipment.includes(x.name)}
+        <ItemCard item={x} />
+      {/if}
+    {/each}
+  </div>
+
+  <div class="armour">
+    <h3>armour</h3>
+    {#if !lockSheet}
+      <select multiple bind:value={$character.armour}>
+        {#each armour as g, index}
+          <option value={g.name}>[{g.cost}] {g.name}</option>
+        {/each}
+      </select>
+    {/if}
+    {#each armour as x, i}
+      {#if $character.armour.includes(x.name)}
+        <ItemCard item={x} />
+      {/if}
+    {/each}
+  </div>
+
+  <div class="weapons">
+    <h3>weapons</h3>
+    {#if !lockSheet}
+      <select multiple bind:value={$character.weapons}>
+        {#each [...new Set(weapons.reduce((a, c) => [...a, c.subType], []))] as type, i}
+          <optgroup label={type}>
+            {#each weapons.filter((e) => e.subType == type) as g, index}
+              <option value={g.name}>[{g.cost}] {g.name}</option>
+            {/each}
+          </optgroup>
+        {/each}
+      </select>
+    {/if}
+    {#each weapons as x, i}
+      {#if $character.weapons.includes(x.name)}
+        <ItemCard item={x} />
+      {/if}
+    {/each}
+  </div>
 </div>
 
 <style>
@@ -243,7 +345,7 @@
     /* wrap */
     flex-wrap: wrap;
   }
-  input[type="checkbox"] {
+  input [type="checkbox"] {
     display: none;
   }
   .red {

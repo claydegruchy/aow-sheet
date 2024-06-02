@@ -155,7 +155,21 @@ export class AOWCharacterForm {
 	get Warrior2RangedScore(): number { return this.getSkillScore(this.Warrior2, this.DEX); }
 	get Warrior2MeleeScore(): number { return this.getSkillScore(this.Warrior2, this.STR); }
 
+	get allowedTechniques(): Technique[] {
 
+		let t: Technique[] = []
+		let g = [this.Warrior1?.style, this.Warrior2?.style]
+		if (g.every(x => !x)) return []
+		for (const style of kungFuStyles) {
+			console.log(style.name, g)
+			if (g.includes(style.name)) {
+				t = [...t, ...style.techniques]
+
+			}
+		}
+		console.log("allowedTechniques", t.length, this.Warrior1?.style, this.Warrior2?.style)
+		return t
+	}
 
 	MoralCodes = {
 		Totally: -1,
@@ -166,6 +180,12 @@ export class AOWCharacterForm {
 	learnedTechniques: string[] = []
 	spells: string[] = []
 
+	equipment: Item[] = []
+	armour: Armour[] = []
+	weapons: Weapon[] = []
+
+	equippedArmour: Armour = null
+	equippedWeapon: Weapon = null
 
 	// Abilities: string[] = new Array(16).fill("");
 	// Gear: string[] = new Array(16).fill("");
@@ -563,12 +583,12 @@ export const skills = [
 // eg "Hammer/Mace" => "Hammer_Mace"
 
 
-type ItemType = "Weapon" | "Armour" | "Companion" | "Hireling" | "Mount" | "Medicine" | "General";
+
 
 export type Item = {
 	name: string;
 	desc?: string,
-	itemType: ItemType
+	itemType: string
 	cost: string,
 }
 
@@ -2148,3 +2168,178 @@ export const items: Item[] = [
 	...medicine,
 	...general,
 ]
+
+export const equipment: Item[] = [
+	...hirelings,
+	...animal_companions,
+	...mounts,
+	...medicine,
+	...general,
+]
+
+
+
+export type Spell = {
+	name: string;
+	range: string;
+	usage: string;
+	duration: string;
+	resist: string;
+	effect: string;
+}
+
+export const spells: Spell[] = [
+	{
+		name: "Aid",
+		range: "Touch",
+		usage: "1/turn",
+		duration: "Encounter",
+		resist: "None",
+		effect: "+10 per level to one ability of target. Level 3 Range: 10 spaces. Level 4: Effect 4 targets or all 4 abilities on one target."
+	},
+	{
+		name: "Animate",
+		range: "5 spaces per level",
+		usage: "Varies",
+		duration: "1 day per level",
+		resist: "None",
+		effect: "Animated creature of rank 5 own rank. Can create total number of creatures per day equal to sorcerer level. Become drained to make animation permanent."
+	},
+	{
+		name: "Blessing/Curse",
+		range: "5 spaces per level",
+		usage: "1/day per level",
+		duration: "Encounter",
+		resist: "WIL",
+		effect: "Priest choose which: blessed targets receive +10 ability of choice; cursed targets receive -10 penalty."
+	},
+	{
+		name: "Charm",
+		range: "5 spaces per level",
+		usage: "1/turn",
+		duration: "10 turns per level",
+		resist: "WIL+10/rank",
+		effect: "Target becomes friendly, flees, surrenders, etc. (lower rank vs caster’s sorcerer’s level) becomes friendly, flees, surrenders, etc. Level 6 permanent if target is drained."
+	},
+	{
+		name: "Commune",
+		range: "5 spaces per level",
+		usage: "1/hour",
+		duration: "Concentrate",
+		resist: "None",
+		effect: "Talk with target (dead, alive, inanimate). Level 4 talk with dead and insect life (yes/no answers). Level 6 cast permanent at expense of being drained. If target is a sorcerer: telepath even if levels range (trap sorcerer in iron cage to break this)."
+	},
+	{
+		name: "Conjure",
+		range: "1 space",
+		usage: "2/day per level",
+		duration: "10 turns per level",
+		resist: "None",
+		effect: "Conjures nonspecific (unless owned by caster) mundane items from unknowable place. Penalties for item’s value (+10 value, weight (-10 per 100 pounds), or scarcity). Outside of combat Duration: 20 hours. Level 6 item stays permanently at the cost of being drained."
+	},
+	{
+		name: "Dispel",
+		range: "Sight",
+		usage: "Unlimited",
+		duration: "Instant",
+		resist: "Special",
+		effect: "Cancel a spell effect. -10 times the skill level sorcerer who cast it. Encounter it and cancel a spell being cast if you have initiative and hold your action at cost of being drained. End a spell. A permanent effect can be dispelled at the cost of being drained."
+	},
+	{
+		name: "Divination",
+		range: "Special",
+		usage: "1/hour",
+		duration: "Concentrate",
+		resist: "None",
+		effect: "Send a sense (two at level 3, three at level 6) elsewhere at speed of 10 spaces per turn through all materials but lead."
+	},
+	{
+		name: "Domination",
+		range: "5 spaces per level",
+		usage: "1/day per level",
+		duration: "10 turns per level",
+		resist: "WIL+10/rank",
+		effect: "Seize control of victim, who perceives but cannot act. Experience one of victim’s memories per turn (no skill check), alter/delete one (skill check), or command victim to perform actions (may require skill check). Metal helmets give +10 to resist. Protection spell announces."
+	},
+	{
+		name: "Entangle",
+		range: "10 spaces per level",
+		usage: "Unlimited",
+		duration: "10 turns per level",
+		resist: "DEX",
+		effect: "Affects area (select 1 space per 2x level). Anyone in or entering area has half MOV if pass check. Outside of combat duration is 2D hours. Damage if cast in combat or becomes permanent at cost of being drained."
+	},
+	{
+		name: "Hinder",
+		range: "5 spaces per level",
+		usage: "1/turn",
+		duration: "Encounter",
+		resist: "WIL",
+		effect: "-10 per level to one ability of target. Level 3 affect 2 targets. Level 6 affect 10 targets or paralyze one until dispelled."
+	},
+	{
+		name: "Illusion",
+		range: "Sight",
+		usage: "1/turn",
+		duration: "10 turns per level",
+		resist: "WIL",
+		effect: "Fool one sense (two at level 3 and three at level 6). Viewers are affected as if illusion were real unless make resistance check. Outside of combat Duration: 2D hours. Level 6 become drained to make duration permanent."
+	},
+	{
+		name: "Offensive Strike",
+		range: "10 spaces per level",
+		usage: "Unlimited",
+		duration: "Instant",
+		resist: "DEX",
+		effect: "Cause 1D damage (2D at level 3, 3D at level 5) to all in area (target space, burst 3), or to single target (+10 damage). Only enchanted armor DR applies. Or charge weapon to cause the magical damage (plus weapon’s damage) on next successful hit."
+	},
+	{
+		name: "Protection",
+		range: "10 spaces per level",
+		usage: "1/turn",
+		duration: "Encounter",
+		resist: "None",
+		effect: "Target gets +1 die per caster level to resistance checks against spells or physical attacks (caster’s choice). Level 3 add DR5 to an armor (level 5 add DR10). Level 6 become drained to make one effect permanent."
+	},
+	{
+		name: "Purify",
+		range: "0",
+		usage: "1/day per level",
+		duration: "Special",
+		resist: "WIL+10/rank",
+		effect: "Reveal & force corporeal spirits/demons in area (burst 5x level), +optional damage 2D per level. Level 3 prevent spirits/demons entering area 1D turns (outside combat 1D hours) per level. Level 6, be drained to purify building/region ejecting evil magic & spirits with rank < caster."
+	},
+	{
+		name: "Spirit Link",
+		range: "2 spaces per level",
+		usage: "1/day",
+		duration: "1 week per level",
+		resist: "WIL",
+		effect: "Links spirit to another. If one is suffering, the other knows it and the spirit link will guide them to each other. Level 3 linked pair shares (5) resistance check if unwilling. Level 4 share BP (resistance check if unwilling). Level 6 link may be permanent at the cost of being drained."
+	},
+	{
+		name: "Telekinesis",
+		range: "2 spaces per level",
+		usage: "Unlimited",
+		duration: "Concentrate",
+		resist: "STR",
+		effect: "Invisible arm & hand (2 spaces per level). Skill check to defend against attacks in place of resistance checks. Arm STR determined by level. Can also erect invisible walls of resistance."
+	},
+	{
+		name: "Transform",
+		range: "5 spaces per level",
+		usage: "2/day per level",
+		duration: "Varies",
+		resist: "STR",
+		effect: "Target becomes another creature of reasonable size and rank 5 target’s rank. Level 3 duration is 1 day. Or, reshape 50 lbs material for 20 hours (20 days at level 3), change actual material level 5). Level 6 permanent at cost of being drained."
+	},
+	{
+		name: "Transport",
+		range: "5 spaces per level",
+		usage: "1/turn",
+		duration: "Varies",
+		resist: "DEX",
+		effect: "Levitate 1 space/turn. Level 3 levitate full MOV for 10 hours. Level 4 fly 2x MOV for 20 hours. Level 5 blink anywhere in sight. Level 6 teleport anywhere caster is familiar. Level 6 make a permanent gateway linking two locations at cost of being drained."
+	}
+];
+

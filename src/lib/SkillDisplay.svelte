@@ -3,6 +3,7 @@
   const dispatch = createEventDispatcher();
   export let skill;
   export let character;
+  export let lockSheet;
 
   const genericUpdate = (key, value) =>
     dispatch("update", { skill, value: { ...skill, [key]: value } });
