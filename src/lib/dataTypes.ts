@@ -128,6 +128,8 @@ export class AOWCharacterForm {
 	DR: number = 0;
 
 
+
+
 	getSkillScore(ability: SkillScore, stat: number): number {
 		if (ability.level == 0) return 0
 		let mod = 0
@@ -184,14 +186,65 @@ export class AOWCharacterForm {
 	armour: Armour[] = []
 	weapons: Weapon[] = []
 
-	equippedArmour: Armour = null
-	equippedWeapon: Weapon = null
+
+	canUseWeapon = (weapon: Weapon) => {
+		for (const attrib of weapon.attributes) {
+			var [att, val] = attrib.split(" ")
+			if (this[att] < val) {
+				return false
+			}
+
+		}
+		return true
+	}
+
+	// equippedArmour?: Armour
+	// equippedWeapon?: Weapon
+
+	// equipArmour = (item?: Armour) => {
+	// 	if (!item) {
+	// 		this.equippedArmour = undefined
+	// 		return
+	// 	}
+	// 	this.equippedArmour = item
+	// }
+
+	// equipWeapon = (item?: Weapon) => {
+	// 	if (!item) {
+	// 		this.equippedWeapon = undefined
+	// 		return
+	// 	}
+	// 	this.equippedWeapon = item
+	// 	console.log("equipped weapon", this.equippedWeapon)
+	// }
+
+
 
 	// Abilities: string[] = new Array(16).fill("");
 	// Gear: string[] = new Array(16).fill("");
 	// INIT: number = 1;
 	// MOV: string = "";
-	// MeleeDamageModifier: string = "";
+	get MeleeDamageModifier(): number {
+		let b = 0
+		if (this.STR < 55) return b
+		if (this.learnedTechniques.includes("Vivacity")) {
+			b += (this.DEX - 55) / 5
+		} else {
+
+			b += (this.STR - 55) / 5
+		}
+		return Math.ceil(b)
+	}
+	get RangedDamageModifier(): number {
+		let b = 0
+		b += (this.DEX - 55) / 5
+		return b
+	}
+
+	get MeleeUnarmedModifier(): number {
+		let b = 0
+		return b
+	}
 	// RangedDamageModifier: string = "";
 	// Appearance: string = "";
 	// Quote: string = "";

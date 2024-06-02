@@ -15,6 +15,7 @@
   import WarriorSkillDisplay from "./WarriorSkillDisplay.svelte";
   import SpellCard from "./SpellCard.svelte";
   import ItemCard from "./ItemCard.svelte";
+  import WeaponTable from "./WeaponTable.svelte";
   export let character;
 
   function handleUpdate(event) {
@@ -49,26 +50,11 @@
     <div>
       <label>
         CP:
-        <input
-          type="number"
-          min="0"
-          max="999"
-          disabled
-          bind:value={$character.CP}
-        />
+        <input type="number" min="0" max="999" bind:value={$character.CP} />
       </label>
     </div>
     <div>
-      <label>
-        Rank:
-        <input
-          type="number"
-          min="0"
-          max="999"
-          disabled
-          value={$character.Rank}
-        />
-      </label>
+      Rank: {$character.Rank}
     </div>
   </div>
 
@@ -105,10 +91,7 @@
     </div>
 
     <div>
-      <label>
-        DR:
-        <input type="number" min="0" max="999" disabled value={$character.DR} />
-      </label>
+      DR: {$character.DR}
     </div>
 
     <div>
@@ -129,29 +112,31 @@
     <h2>tertiary stats</h2>
 
     <div>
-      <label>
-        INIT:
-        <input
-          type="number"
-          min="0"
-          max="999"
-          disabled
-          bind:value={$character.INIT}
-        />
-      </label>
+      INIT: {$character.INIT}
     </div>
     <div>
-      <label>
-        MOV:
-        <input
-          type="number"
-          min="0"
-          max="999"
-          disabled
-          bind:value={$character.MOV}
-        />
-      </label>
+      MOV: {$character.MOV}
     </div>
+  </div>
+
+  <div class="damage-modifiers">
+    Damage Mods
+    <table>
+      <thead>
+        <tr>
+          <th>Melee (W)</th>
+          <th>Melee (UA)</th>
+          <th>Ranged</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{$character.MeleeDamageModifier}</td>
+          <td>{$character.MeleeUnarmedModifier}</td>
+          <td>{$character.RangedDamageModifier}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="ability-scores">
@@ -330,11 +315,7 @@
         {/each}
       </select>
     {/if}
-    {#each weapons as x, i}
-      {#if $character.weapons.includes(x.name)}
-        <ItemCard item={x} />
-      {/if}
-    {/each}
+    <WeaponTable {character} />
   </div>
 </div>
 
