@@ -17,8 +17,6 @@ type relationRange = 0 | 1 | 2
 // }
 
 
-
-
 export type SkillScore = {
 	name: string,
 	level: number;
@@ -198,6 +196,18 @@ export class AOWCharacterForm {
 		return true
 	}
 
+	trainedWithWeapon = (weapon: Weapon): boolean => {
+		for (const { style } of [this.Warrior1, this.Warrior2]) {
+			if (!style || style == '') continue
+			for (const ks of kungFuStyles) {
+				if (ks.name == style && ks.weapons.includes(weapon)) return true
+				continue
+			}
+		}
+
+		return false
+	}
+
 	// equippedArmour?: Armour
 	// equippedWeapon?: Weapon
 
@@ -225,7 +235,7 @@ export class AOWCharacterForm {
 	// INIT: number = 1;
 	// MOV: string = "";
 	get MeleeDamageModifier(): number {
-		let b = 0
+	let b = 0
 		if (this.STR < 55) return b
 		if (this.learnedTechniques.includes("Vivacity")) {
 			b += (this.DEX - 55) / 5
@@ -245,6 +255,46 @@ export class AOWCharacterForm {
 		let b = 0
 		return b
 	}
+
+
+	get kungFuDamage(): string {
+		let selected = unarmed_no_kung_fu.damage
+		let v = [
+			"1D",
+			"1D+2",
+			"1D+4",
+			"2D",
+			"2D+2",
+			"2D+4",
+		]
+
+		let m = Math.max(this.Warrior1.level, this.Warrior2.level)
+		if (m > 0) selected = v[m - 1]
+		return selected
+
+	}
+
+
+	// getKungFuDamage = (weapon: Weapon = unarmed_no_kung_fu) => {
+
+	// 	let { damage } = weapon
+
+	// 	let warriorDamageLevels = 
+
+	// 	/*
+	// 	if a character is trained in using a weapon or they are unarmed, they do the highest beyween warriorDamageLevels and weapon.damage
+	// 	if a character has no warrior levels or is not trained, they always use weapon.damage, if they are unarmed they use unarmed_no_kung_fu 
+
+	// 	*/
+
+
+
+
+
+
+
+	// 	return ""
+	// }
 	// RangedDamageModifier: string = "";
 	// Appearance: string = "";
 	// Quote: string = "";
@@ -663,7 +713,7 @@ const battleaxe: Weapon = {
 	name: "Battleaxe",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 50"],
 	damage: "2D+2",
 	cost: "10tl",
@@ -676,7 +726,7 @@ const bian: Weapon = {
 	name: "Bian (Hard Whip)",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 55"],
 	damage: "2D",
 	cost: "20tl",
@@ -689,7 +739,7 @@ const butterfly_sword: Weapon = {
 	name: "Butterfly Sword",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: [],
 	damage: "1D+2",
 	cost: "15tl",
@@ -715,7 +765,7 @@ const club: Weapon = {
 	name: "Club",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: [],
 	damage: "1D+1",
 	cost: "1tl",
@@ -728,7 +778,7 @@ const chui: Weapon = {
 	name: "Chui",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 65"],
 	damage: "2D+4",
 	cost: "12tl",
@@ -741,7 +791,7 @@ const crescent_moon_knife: Weapon = {
 	name: "Crescent Moon Knife",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["DEX 60"],
 	damage: "1D+3",
 	cost: "5tl",
@@ -780,7 +830,7 @@ const dao: Weapon = {
 	name: "Dao (Heavy Sabre)",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 55"],
 	damage: "2D+2",
 	cost: "12tl",
@@ -806,7 +856,7 @@ const greataxe: Weapon = {
 	name: "Greataxe",
 	subType: "Melee",
 	hands: 2,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 70"],
 	damage: "3D",
 	cost: "40tl",
@@ -819,7 +869,7 @@ const great_club: Weapon = {
 	name: "Great club",
 	subType: "Melee",
 	hands: 2,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 55"],
 	damage: "2D",
 	cost: "15tl",
@@ -832,7 +882,7 @@ const hammer_mace: Weapon = {
 	name: "Hammer/Mace",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 45"],
 	damage: "1D+3",
 	cost: "8tl",
@@ -858,7 +908,7 @@ const hook_sword: Weapon = {
 	name: "Hook sword",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["DEX 60"],
 	damage: "2D",
 	cost: "20tl",
@@ -911,7 +961,7 @@ const iron_wrist_rings: Weapon = {
 	name: "Iron Wrist Rings",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 70"],
 	damage: "+3 unarmed",
 	cost: "5tl",
@@ -937,7 +987,7 @@ const jian_longsword: Weapon = {
 	name: "Jian (Longsword)",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 50 & DEX 50"],
 	damage: "2D+1",
 	cost: "15tl",
@@ -950,7 +1000,7 @@ const kwandao: Weapon = {
 	name: "Kwandao",
 	subType: "Melee",
 	hands: 2,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 55"],
 	damage: "2D+3",
 	cost: "12tl",
@@ -963,7 +1013,7 @@ const lajatang: Weapon = {
 	name: "Lajatang",
 	subType: "Melee",
 	hands: 2,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 50 & DEX 50"],
 	damage: "2D",
 	cost: "12tl",
@@ -989,7 +1039,7 @@ const maul_great_flail_warhammer: Weapon = {
 	name: "Maul, Great Flail, Warhammer",
 	subType: "Melee",
 	hands: 2,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 50"],
 	damage: "2D+3",
 	cost: "10tl",
@@ -1028,7 +1078,7 @@ const nunchaku: Weapon = {
 	name: "Nunchaku",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: ["DEX 55"],
 	damage: "1D+3",
 	cost: "5tl",
@@ -1054,7 +1104,7 @@ const shortsword: Weapon = {
 	name: "Shortsword",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: [],
 	damage: "1D+3",
 	cost: "8tl",
@@ -1080,7 +1130,7 @@ const staff: Weapon = {
 	name: "Staff",
 	subType: "Melee",
 	hands: 2,
-	range: NaN,
+	range: 0,
 	attributes: [],
 	damage: "1D+3",
 	cost: "4tl",
@@ -1093,7 +1143,7 @@ const three_section_staff: Weapon = {
 	name: "Three-section Staff",
 	subType: "Melee",
 	hands: 2,
-	range: NaN,
+	range: 0,
 	attributes: ["DEX 55"],
 	damage: "1D+2",
 	cost: "8tl",
@@ -1106,7 +1156,7 @@ const two_handed_sword: Weapon = {
 	name: "Two-handed Sword",
 	subType: "Melee",
 	hands: 2,
-	range: NaN,
+	range: 0,
 	attributes: ["STR 65"],
 	damage: "2D+4",
 	cost: "40tl",
@@ -1119,7 +1169,7 @@ const unarmed_no_kung_fu: Weapon = {
 	name: "Unarmed (no kung fu)",
 	subType: "Melee",
 	hands: 1,
-	range: NaN,
+	range: 0,
 	attributes: [],
 	damage: "1/2D",
 	cost: "--",

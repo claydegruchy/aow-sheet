@@ -1,8 +1,31 @@
-<script>
+<script lang="ts">
   export let character;
   import { weapons } from "./dataTypes";
 
   let mainWeapon;
+
+  //   $: character,
+
+  let ab = (bonus) => (bonus == 0 ? "" : " + " + bonus);
+
+  let w = [];
+  $: character,
+    (w = weapons
+      .filter((weapon) => $character.weapons.includes(weapon.name))
+      .map((weapon) => {
+        let g = {
+          ...weapon,
+          meetRequirements: $character.canUseWeapon(weapon),
+          trained: $character.trainedWithWeapon(weapon),
+          bonus:
+            weapon.subType == "Melee"
+              ? $character.MeleeDamageModifier
+              : $character.RangedDamageModifier,
+        };
+        return g;
+      }));
+
+  //
 </script>
 
 <div>
@@ -18,26 +41,21 @@
       </tr>
     </thead>
     <tbody>
-      {#each weapons as x, i}
-        {#if $character.weapons.includes(x.name)}
-          <tr class={$character.canUseWeapon(x) ? "" : "error"}>
-            <td>
-              {x.name} ({$character.canUseWeapon(x) ? "" : "Cannot use"})</td
-            >
-            <td> {x.hands}</td>
-            <td> {x.range || 0}</td>
-            <td> {x.attributes}</td>
-            <td> {x.damage}</td>
-            <td>
-              {#if $character.canUseWeapon(x)}
-                <button on:click={() => (mainWeapon = x)}
-                  >{mainWeapon == x ? "Main" : "Set main"}</button
-                >
-              {:else}
-                Cannot use{/if}
-            </td>
-          </tr>
-        {/if}
+      <tr>
+        <td>Unarmed</td>
+        <td>1</td>
+        <td>0</td>
+        <td>Hand</td>
+        <td>{$character.kungFuDamage}{ab($character.MeleeUnarmedModifier)}</td>
+      </tr>
+      {#each w as x, i}
+        <tr class={x.meetRequirements ? "" : "error"}>
+          <td> {x.name} {x.trained ? "(T)" : ""}</td>
+          <td> {x.hands}</td>
+          <td> {x.range || 0}</td>
+          <td> {x.attributes}</td>
+          <td> {x.meetRequirements ? x.damage + ab(x.bonus) : "0"}</td>
+        </tr>
       {/each}
     </tbody>
   </table>

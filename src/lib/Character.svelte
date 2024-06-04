@@ -309,7 +309,10 @@
         {#each [...new Set(weapons.reduce((a, c) => [...a, c.subType], []))] as type, i}
           <optgroup label={type}>
             {#each weapons.filter((e) => e.subType == type) as g, index}
-              <option value={g.name}>[{g.cost}] {g.name}</option>
+              <option value={g.name}
+                >[{g.cost}] {g.name}
+                {$character.trainedWithWeapon(g) ? "(T)" : ""}</option
+              >
             {/each}
           </optgroup>
         {/each}
