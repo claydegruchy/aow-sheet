@@ -189,7 +189,7 @@
           min="0"
           max="999"
           bind:value={$character.WIL}
-        />
+        />	
       </label>
     </div>
   </div>
@@ -197,19 +197,21 @@
   <div class="skill-scores">
     <h2>Skill Scores</h2>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Base Ability</th>
-          <th>Level</th>
-          <th>Relation</th>
-          <th>%</th>
-        </tr>
-      </thead>
+    <section class="specialist skills">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Base Ability</th>
+            <th>Level</th>
+            <th>P/S</th>
+            <th>%</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
 
-      <!-- prettier-ignore -->
-      <tbody>
+        <!-- prettier-ignore -->
+        <tbody>
 		<SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Alchemy}/>
         <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Detective}/>
         <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Diviner}/>
@@ -220,14 +222,13 @@
         <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Sorcerer}/>
         <SkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Thief} />
       </tbody>
-    </table>
+      </table>
+    </section>
     <!-- prettier-ignore -->
-    <div>
-      <section>
+    <section class="warrior skills">
         <WarriorSkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Warrior1} />
         <WarriorSkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Warrior2} />
       </section>
-    </div>
   </div>
 
   <div class="talents-spells-abilities">
@@ -248,6 +249,7 @@
         {/if}
       {/each}
     </div>
+
     <h3>Spells</h3>
     {#if !lockSheet}
       <select multiple bind:value={$character.spells}>
@@ -323,6 +325,10 @@
 </div>
 
 <style>
+  tr {
+    text-align: left;
+  }
+
   .techniques-list {
     display: flex;
     flex-direction: row;

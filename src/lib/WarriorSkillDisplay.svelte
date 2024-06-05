@@ -27,7 +27,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Base Ability</th>
+      <th>Ability</th>
       <th>Level</th>
       <th>Relation</th>
       <th> %</th>
@@ -50,29 +50,22 @@
       <td rowspan="2">
         <select
           bind:value={skill.relation}
+          disabled={skill.level <= 0}
           on:change={(event) =>
             genericUpdate("relation", Number(event?.target?.value || 0))}
         >
-          <option value={2}>Primary (+20)</option>
-          <option value={1}>Secondary (+10)</option>
+          <option value={2}>P (+20)</option>
+          <option value={1}>S (+10)</option>
           <option value={0}>None</option>
         </select>
       </td>
       <td>
-        <input
-          type="number"
-          disabled
-          value={$character[skill.name + "MeleeScore"]}
-        />
+        {$character[skill.name + "MeleeScore"]}
       </td>
     </tr>
     <tr>
       <td>Ranged (DEX {$character.DEX})</td>
-      <input
-        type="number"
-        disabled
-        value={$character[skill.name + "RangedScore"]}
-      />
+      {$character[skill.name + "RangedScore"]}
     </tr>
     <tr> </tr>
     <tr></tr>

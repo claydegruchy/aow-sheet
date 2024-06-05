@@ -120,3 +120,11 @@ button:focus-visible {
     /* Slightly different red on hover */
   }
 }
+
+
+/* alternating colours table */
+tbody td {}
+
+tbody tr:nth-child(even) {
+  background-color: #eeeeee;
+}

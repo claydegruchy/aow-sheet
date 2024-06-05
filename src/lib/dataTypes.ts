@@ -23,6 +23,7 @@ export type SkillScore = {
 	relation: relationRange;
 	baseAbility: string,
 	score?: number; // Calculated based on primary attributes
+	linkedSkill: Skill;
 };
 
 export type WarriorScore = {
@@ -33,6 +34,8 @@ export type WarriorScore = {
 
 	meleeScore?: number; // Calculated based on STR
 	rangedScore?: number; // Calculated based on DEX
+
+	linkedSkill: Skill;
 };
 
 export const moralCodes = ['Kind', 'Cruel', 'Focused', 'Unfocused', 'Selfless', 'Selfish', 'Honorable', 'Deceitful', 'Brave', 'Cowardly']
@@ -42,17 +45,17 @@ export const moralCodes = ['Kind', 'Cruel', 'Focused', 'Unfocused', 'Selfless', 
 export class AOWCharacterForm {
 
 	// skills
-	Alchemy: SkillScore = { name: "Alchemy", baseAbility: "LOG", level: 0, relation: 0, };
-	Detective: SkillScore = { name: "Detective", baseAbility: "LOG", level: 0, relation: 0 };
-	Diviner: SkillScore = { name: "Diviner", baseAbility: "LOG", level: 0, relation: 0 };
-	Leader: SkillScore = { name: "Leader", baseAbility: "WIL", level: 0, relation: 0 };
-	Mystic: SkillScore = { name: "Mystic", baseAbility: "WIL", level: 0, relation: 0 };
-	Scholar: SkillScore = { name: "Scholar", baseAbility: "LOG", level: 0, relation: 0 };
-	Scout: SkillScore = { name: "Scout", baseAbility: "LOG", level: 0, relation: 0 };
-	Sorcerer: SkillScore = { name: "Sorcerer", baseAbility: "WIL", level: 0, relation: 0 };
-	Thief: SkillScore = { name: "Thief", baseAbility: "DEX", level: 0, relation: 0 };
-	Warrior1: WarriorScore = { name: "Warrior1", style: "", level: 0, relation: 0 };
-	Warrior2: WarriorScore = { name: "Warrior2", style: "", level: 0, relation: 0 };
+	Alchemy: SkillScore = { name: "Alchemy", baseAbility: "LOG", level: 0, relation: 0, linkedSkill: alchemistSkill };
+	Detective: SkillScore = { name: "Detective", baseAbility: "LOG", level: 0, relation: 0, linkedSkill: detectiveSkill };
+	Diviner: SkillScore = { name: "Diviner", baseAbility: "LOG", level: 0, relation: 0, linkedSkill: divinerSkill };
+	Leader: SkillScore = { name: "Leader", baseAbility: "WIL", level: 0, relation: 0, linkedSkill: leaderSkill };
+	Mystic: SkillScore = { name: "Mystic", baseAbility: "WIL", level: 0, relation: 0, linkedSkill: mysticSkill };
+	Scholar: SkillScore = { name: "Scholar", baseAbility: "LOG", level: 0, relation: 0, linkedSkill: scholarSkill };
+	Scout: SkillScore = { name: "Scout", baseAbility: "LOG", level: 0, relation: 0, linkedSkill: scoutSkill };
+	Sorcerer: SkillScore = { name: "Sorcerer", baseAbility: "WIL", level: 0, relation: 0, linkedSkill: sorcererSkill };
+	Thief: SkillScore = { name: "Thief", baseAbility: "DEX", level: 0, relation: 0, linkedSkill: thiefSkill };
+	Warrior1: WarriorScore = { name: "Warrior1", style: "", level: 0, relation: 0, linkedSkill: warriorSkill };
+	Warrior2: WarriorScore = { name: "Warrior2", style: "", level: 0, relation: 0, linkedSkill: warriorSkill };
 
 
 	Name: string = "";
@@ -93,10 +96,10 @@ export class AOWCharacterForm {
 		return rank
 	};
 	// main abilitiesƒ
-	STR: number = 0;
-	DEX: number = 0;
-	LOG: number = 0;
-	WIL: number = 0;
+	STR: number = 50;
+	DEX: number = 55;
+	LOG: number = 60;
+	WIL: number = 65;
 
 	//derived
 
@@ -128,7 +131,9 @@ export class AOWCharacterForm {
 
 
 
-	getSkillScore(ability: SkillScore, stat: number): number {
+	getSkillScore(ability: SkillScore | WarriorScore, stat: number): number {
+		let { requiredForAttempt } = ability.linkedSkill
+		if (!requiredForAttempt && ability.level == 0) return stat / 2
 		if (ability.level == 0) return 0
 		let mod = 0
 		return stat / 2 + ability.level * 10 + ability.relation * 10;
@@ -235,7 +240,7 @@ export class AOWCharacterForm {
 	// INIT: number = 1;
 	// MOV: string = "";
 	get MeleeDamageModifier(): number {
-	let b = 0
+		let b = 0
 		if (this.STR < 55) return b
 		if (this.learnedTechniques.includes("Vivacity")) {
 			b += (this.DEX - 55) / 5
@@ -329,6 +334,7 @@ export type Ability = {
 export type Skill = {
 	name: string;
 	desc: string,
+	requiredForAttempt?: boolean;
 	score: string,
 	titles: string[]
 	abilities: Ability[],
@@ -370,7 +376,8 @@ const warriorSkill: Skill = {
 const sorcererSkill: Skill = {
 	name: "Sorcerer",
 	desc: `This skill reflects the ability to wield magical powers and create powerful objects through strength of will.`,
-	score: `half WIL +10 per sorcerer level. Cannot be attempted unskilled.`,
+	score: `half WIL +10 per sorcerer level.`,
+	requiredForAttempt: true,
 	titles: ["Acolyte", "Adept", "Mage", "Warlock", "Sorcerer", "Grand Sorcerer"],
 	abilities: [
 		{
@@ -431,7 +438,8 @@ const thiefSkill: Skill = {
 const scholarSkill: Skill = {
 	name: "Scholar",
 	desc: `This skill represents knowledge gained from education and access to books, legends, and lore.`,
-	score: `half LOG +10 per Scholar level. Cannot be attempted unskilled.`,
+	score: `half LOG +10 per Scholar level.`,
+	requiredForAttempt: true,
 	titles: ["Student", "Cultivated Talent", "Researcher", "Scholar", "Promoted Scholar", "Master Scholar"],
 	abilities: [
 		{
@@ -484,7 +492,8 @@ const scoutSkill: Skill = {
 const leaderSkill: Skill = {
 	name: "Leader",
 	desc: `This skill represents experience and training in personal and strategic combat on the battlefield.`,
-	score: `half WIL +10 per Leader level. Cannot be attempted unskilled.`,
+	score: `half WIL +10 per Leader level.`,
+	requiredForAttempt: true,
 	titles: ["Protector", "Defender", "Guardian", "Knight", "Warlord", "Highlord"],
 	abilities: [
 		{
@@ -516,7 +525,8 @@ const leaderSkill: Skill = {
 const mysticSkill: Skill = {
 	name: "Mystic",
 	desc: `This skill reflects years of devotion to an ascetic lifestyle and cultivation of senses to interact with natural energy.`,
-	score: `half WIL +10 per Mystic level. Cannot be attempted unskilled.`,
+	score: `half WIL +10 per Mystic level.`,
+	requiredForAttempt: true,
 	titles: ["Novitiate", "Brother/Sister", "Priest", "Chant Leader", "Chief Monk", "Abbot"],
 	abilities: [
 		{
@@ -544,7 +554,8 @@ const mysticSkill: Skill = {
 const divinerSkill: Skill = {
 	name: "Diviner",
 	desc: `This skill represents the ability to interpret signs, predict fortunes, and make decisions based on cosmic forces.`,
-	score: `half LOG +10 per Diviner level. Cannot be attempted unskilled.`,
+	score: `half LOG +10 per Diviner level.`,
+	requiredForAttempt: true,
 	titles: ["Fortune Teller", "Augur", "Soothsayer", "Astrologer", "Seer", "Master Diviner"],
 	abilities: [
 		{
@@ -587,7 +598,8 @@ const divinerSkill: Skill = {
 const alchemistSkill: Skill = {
 	name: "Alchemist",
 	desc: `This skill represents expertise in understanding substances and their effects on the body.`,
-	score: `half LOG +10 per Alchemist level. Cannot be attempted unskilled.`,
+	score: `half LOG +10 per Alchemist level.`,
+	requiredForAttempt: true,
 	titles: ["Herbalist", "Apothecary", "Doctor", "Physician", "Alchemist", "Master Alchemist"],
 	abilities: [
 		{
@@ -642,7 +654,8 @@ const detectiveSkill: Skill = {
 const strategistSkill: Skill = {
 	name: "Strategist",
 	desc: `An alternative to the Diviner skill, the Strategist skill focuses on practical maneuvering and political intrigue, providing a toolkit for navigating power dynamics and outsmarting adversaries`,
-	score: `half LOG +10 per Strategist level. Cannot be attempted unskilled.`,
+	score: `half LOG +10 per Strategist level.`,
+	requiredForAttempt: true,
 	titles: ["Cunning Agent", "Discerning Operative", "Sagacious Observer", "Clever Architect", "Master Strategist", "Divine Talent"],
 	abilities: [
 		{
