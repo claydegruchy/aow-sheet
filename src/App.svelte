@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { AOWCharacterForm } from "./lib/dataTypes";
   import Character from "./lib/Character.svelte";
   // import writable
-  import { writable } from "svelte/store";
-
-  var character = writable(new AOWCharacterForm());
+  import { character } from "./lib/store";
 </script>
 
 <main>
-  <Character {character} />
+  <Character />
 </main>
 
 <style>

@@ -13,11 +13,9 @@
   import SkillDisplay from "./SkillDisplay.svelte";
   import SimpleCard from "./SimpleCard.svelte";
   import WarriorSkillDisplay from "./WarriorSkillDisplay.svelte";
-  import SpellCard from "./SpellCard.svelte";
-  import ItemCard from "./ItemCard.svelte";
   import WeaponTable from "./WeaponTable.svelte";
-  import Dialog from "./Dialog.svelte";
-  export let character;
+
+  import { character } from "./store";
 
   function handleUpdate(event) {
     const { skill, value } = event.detail;
@@ -27,10 +25,16 @@
 
   let lockSheet = false;
   const toggleLock = () => (lockSheet = !lockSheet);
+
+  const upNumber = (e) => console.log(e);
 </script>
 
 <div class="fixed">
   <button on:click={toggleLock}>{lockSheet ? "🔒" : "🔓"}</button>
+</div>
+
+<div>
+  <button value="lmao" on:click={upNumber}>text</button>
 </div>
 
 <div class="character-form">
@@ -233,10 +237,10 @@
           {/each}
         </select>
       {/if}
-      <div>
+      <div class="card-deck">
         {#each techniques as technique, index}
           {#if $character.learnedTechniques.includes(technique.name)}
-            <SimpleCard class="red" {...technique} />
+            <SimpleCard {...technique} />
           {/if}
         {/each}
       </div>
@@ -252,10 +256,10 @@
           {/each}
         </select>
       {/if}
-      <div>
+      <div class="card-deck">
         {#each spells as spell, index}
           {#if $character.spells.includes(spell.name)}
-            <SpellCard {...spell} />
+            <SimpleCard {...spell} />
           {/if}
         {/each}
       </div>
@@ -276,12 +280,13 @@
           {/each}
         </select>
       {/if}
-
-      {#each equipment as x, i}
-        {#if $character.equipment.includes(x.name)}
-          <ItemCard item={x} />
-        {/if}
-      {/each}
+      <div class="card-deck">
+        {#each equipment as x, i}
+          {#if $character.equipment.includes(x.name)}
+            <SimpleCard {...x} />
+          {/if}
+        {/each}
+      </div>
     </div>
     <div class="armour">
       {#if $character.armour.length > 0 || !lockSheet}
@@ -294,11 +299,13 @@
           {/each}
         </select>
       {/if}
-      {#each armour as x, i}
-        {#if $character.armour.includes(x.name)}
-          <ItemCard item={x} />
-        {/if}
-      {/each}
+      <div class="card-deck">
+        {#each armour as x, i}
+          {#if $character.armour.includes(x.name)}
+            <SimpleCard {...x} />
+          {/if}
+        {/each}
+      </div>
     </div>
   </section>
 
@@ -365,5 +372,12 @@
     grid-template-columns: 1fr;
     grid-row-gap: 8px; /* Adjust vertical gap between items if needed */
     text-align: left;
+  }
+
+  .card-deck {
+    display: flex;
+    flex-wrap: wrap;
+	justify-content: space-around;
+    gap: 5px;
   }
 </style>

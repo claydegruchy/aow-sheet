@@ -112,10 +112,11 @@ td {
     "base-stats dr-bq-qi"
     "skill-scores skill-scores"
     "skill-scores skill-scores"
+    "weapons weapons"
     "abilities abilities"
     "abilities abilities"
     "abilities abilities"
-    "weapons weapons";
+  ;
 }
 
 .name-desc,
@@ -259,4 +260,11 @@ input[type="search"]:focus {
 select+span {
   background: #000000;
   /* Change background color for select */
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+
+  opacity: 1;
+
 }
