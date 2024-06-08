@@ -16,6 +16,7 @@
   import SpellCard from "./SpellCard.svelte";
   import ItemCard from "./ItemCard.svelte";
   import WeaponTable from "./WeaponTable.svelte";
+  import Dialog from "./Dialog.svelte";
   export let character;
 
   function handleUpdate(event) {
@@ -27,14 +28,13 @@
   let lockSheet = false;
 </script>
 
+<h1>Character Sheet</h1>
+<label
+  >Lock Sheet
+  <input type="checkbox" bind:checked={lockSheet} />
+</label>
 <div class="character-form">
-  <h1>Character Sheet</h1>
-  <label
-    >Lock Sheet
-    <input type="checkbox" bind:checked={lockSheet} />
-  </label>
-  <div class="top-level-stats">
-    <h2>Basics</h2>
+  <div class="name-desc">
     <div>
       <label>
         Name:
@@ -47,20 +47,19 @@
         <textarea bind:value={$character.Description} />
       </label>
     </div>
-    <div>
-      <label>
-        CP:
-        <input type="number" min="0" max="999" bind:value={$character.CP} />
-      </label>
-    </div>
+  </div>
+
+  <div class="cp-rank">
+    <label>
+      CP:
+      <input type="number" min="0" max="999" bind:value={$character.CP} />
+    </label>
     <div>
       Rank: {$character.Rank}
     </div>
   </div>
 
   <div class="morals">
-    <h2>Morals</h2>
-
     {#each ["Totally", "Very", "Somewhat"] as devotion, idx}
       <div>
         {devotion}
@@ -74,19 +73,20 @@
     {/each}
   </div>
 
-  <div class="secondary-stats">
-    <h2>Secondary Stats</h2>
+  <div class="dr-bq-qi">
     <div>
       <label>
         BP:
         <input
-          disabled={lockSheet}
           type="number"
           min="0"
-          max="999"
+          max={$character.BP}
           value={$character.BP}
+          inputmode="numeric"
         />
-        <a on:click={() => ($character.BP = $character.BaseBP)}>Reset</a>
+        <a class="flip" on:click={() => ($character.BP = $character.BaseBP)}>
+          ↩️
+        </a>
       </label>
     </div>
 
@@ -108,9 +108,7 @@
     </div>
   </div>
 
-  <div class="tertiary-stats">
-    <h2>tertiary stats</h2>
-
+  <div class="init-mov">
     <div>
       INIT: {$character.INIT}
     </div>
@@ -119,28 +117,7 @@
     </div>
   </div>
 
-  <div class="damage-modifiers">
-    Damage Mods
-    <table>
-      <thead>
-        <tr>
-          <th>Melee (W)</th>
-          <th>Melee (UA)</th>
-          <th>Ranged</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{$character.MeleeDamageModifier}</td>
-          <td>{$character.MeleeUnarmedModifier}</td>
-          <td>{$character.RangedDamageModifier}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="ability-scores">
-    <h2>Ability Scores</h2>
+  <div class="base-stats">
     <div>
       <label>
         STR:
@@ -189,16 +166,14 @@
           min="0"
           max="999"
           bind:value={$character.WIL}
-        />	
+        />
       </label>
     </div>
   </div>
 
   <div class="skill-scores">
-    <h2>Skill Scores</h2>
-
     <section class="specialist skills">
-      <table>
+      <table class="skills">
         <thead>
           <tr>
             <th>Name</th>
@@ -231,8 +206,10 @@
       </section>
   </div>
 
-  <div class="talents-spells-abilities">
-    <h3>Techniques</h3>
+  <div class="abilities">
+    {#if $character.learnedTechniques.length > 0 || !lockSheet}
+      <h3>Techniques</h3>
+    {/if}
     {#if !lockSheet}
       <select multiple bind:value={$character.learnedTechniques}>
         {#each techniques as technique, index}
@@ -250,7 +227,9 @@
       {/each}
     </div>
 
-    <h3>Spells</h3>
+    {#if $character.spells.length > 0 || !lockSheet}
+      <h3>Spells</h3>
+    {/if}
     {#if !lockSheet}
       <select multiple bind:value={$character.spells}>
         {#each spells as spell, index}
@@ -268,7 +247,9 @@
   </div>
 
   <div class="equipment">
-    <h3>equipment</h3>
+    {#if $character.equipment.length > 0 || !lockSheet}
+      <h3>equipment</h3>
+    {/if}
     {#if !lockSheet}
       <select multiple bind:value={$character.equipment}>
         {#each [...new Set(equipment.reduce((a, c) => [...a, c.itemType], []))] as type, i}
@@ -286,22 +267,23 @@
         <ItemCard item={x} />
       {/if}
     {/each}
-  </div>
-
-  <div class="armour">
-    <h3>armour</h3>
-    {#if !lockSheet}
-      <select multiple bind:value={$character.armour}>
-        {#each armour as g, index}
-          <option value={g.name}>[{g.cost}] {g.name}</option>
-        {/each}
-      </select>
-    {/if}
-    {#each armour as x, i}
-      {#if $character.armour.includes(x.name)}
-        <ItemCard item={x} />
+    <div class="armour">
+      {#if $character.armour.length > 0 || !lockSheet}
+        <h3>armour</h3>
       {/if}
-    {/each}
+      {#if !lockSheet}
+        <select multiple bind:value={$character.armour}>
+          {#each armour as g, index}
+            <option value={g.name}>[{g.cost}] {g.name}</option>
+          {/each}
+        </select>
+      {/if}
+      {#each armour as x, i}
+        {#if $character.armour.includes(x.name)}
+          <ItemCard item={x} />
+        {/if}
+      {/each}
+    </div>
   </div>
 
   <div class="weapons">
@@ -340,5 +322,116 @@
   }
   .red {
     color: #ff0000;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+    /* black lines */
+    border: 1px solid;
+
+    /* padding: 1px; */
+  }
+
+  table,
+  th,
+  td {
+    border: 1px solid;
+    padding: 2px;
+    padding-right: 10px;
+  }
+
+  @media (max-width: 1px) {
+    .character-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      gap: 0px 0px;
+      grid-auto-flow: row;
+      grid-template-areas:
+        "name-desc name-desc name-desc cp-rank morals morals"
+        "base-stats skill-scores skill-scores skill-scores skill-scores skill-scores"
+        "base-stats skill-scores skill-scores skill-scores skill-scores skill-scores"
+        "init-mov skill-scores skill-scores skill-scores skill-scores skill-scores"
+        "dr-bq-qi abilities abilities abilities abilities equipment"
+        ". abilities abilities abilities abilities equipment"
+        "weapons weapons weapons weapons weapons equipment";
+    }
+  }
+
+  @media (max-width: 76800000px) {
+    .character-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      grid-template-areas:
+        "name-desc name-desc"
+        "morals cp-rank"
+        "base-stats dr-bq-qi"
+        "init-mov ."
+        "skill-scores skill-scores"
+        "skill-scores skill-scores"
+        "abilities abilities"
+        "abilities abilities"
+        "equipment equipment"
+        "weapons weapons";
+    }
+
+    .name-desc,
+    .morals,
+    .cp-rank,
+    .base-stats,
+    .skill-scores,
+    .init-mov,
+    .dr-bq-qi,
+    .equipment,
+    .weapons,
+    .abilities {
+      margin-bottom: 10px; /* Add some spacing between sections */
+    }
+
+    table > * {
+      font-size: 20%;
+    }
+  }
+
+  .name-desc {
+    grid-area: name-desc;
+  }
+
+  .morals {
+    grid-area: morals;
+  }
+
+  .cp-rank {
+    grid-area: cp-rank;
+  }
+
+  .base-stats {
+    grid-area: base-stats;
+  }
+
+  .skill-scores {
+    grid-area: skill-scores;
+  }
+
+  .init-mov {
+    grid-area: init-mov;
+  }
+
+  .dr-bq-qi {
+    grid-area: dr-bq-qi;
+  }
+
+  .equipment {
+    grid-area: equipment;
+  }
+
+  .weapons {
+    grid-area: weapons;
+  }
+
+  .abilities {
+    grid-area: abilities;
   }
 </style>

@@ -6,7 +6,31 @@
 
   //   $: character,
 
-  let ab = (bonus) => (bonus == 0 ? "" : " + " + bonus);
+  let ab = (bonus) => (bonus == 0 ? "" : "+" + bonus);
+
+  let bs = ({ subType }) => {
+    let b = 0;
+    if (subType == "Ranged") {
+      b = Math.max(
+        $character.Warrior1RangedScore,
+        $character.Warrior2RangedScore
+      );
+    } else {
+      b = Math.max(
+        $character.Warrior1MeleeScore,
+        $character.Warrior2MeleeScore
+      );
+    }
+
+    // <!--
+    // 		Warrior1MeleeScore
+
+    // 		Warrior2MeleeScore -->
+
+    //           {$character[x.subType + "Score"]}
+    //           <!-- {$character[skill.name + "RangedScore"]} -->
+    return b;
+  };
 
   let w = [];
   $: character,
@@ -47,14 +71,19 @@
         <td>0</td>
         <td>Hand</td>
         <td>{$character.kungFuDamage}{ab($character.MeleeUnarmedModifier)}</td>
+        <!-- below is a hack that uses an unused variable to force refresh -->
+        <td>{bs({ subType: "Melee", c: $character })}</td>
       </tr>
       {#each w as x, i}
-        <tr class={x.meetRequirements ? "" : "error"}>
+        <tr>
           <td> {x.name} {x.trained ? "(T)" : ""}</td>
           <td> {x.hands}</td>
           <td> {x.range || 0}</td>
-          <td> {x.attributes}</td>
+          <td> {x.attributes} {x.meetRequirements ? "" : "❌"}</td>
           <td> {x.meetRequirements ? x.damage + ab(x.bonus) : "0"}</td>
+          <td>
+            {x.meetRequirements ? bs(x) : 0}
+          </td>
         </tr>
       {/each}
     </tbody>

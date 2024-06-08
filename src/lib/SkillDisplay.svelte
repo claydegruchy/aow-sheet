@@ -1,5 +1,6 @@
 <script type="ts">
   import { createEventDispatcher } from "svelte";
+  import Dialog from "./Dialog.svelte";
   const dispatch = createEventDispatcher();
   export let skill;
   export let character;
@@ -42,12 +43,26 @@
   </td>
   <td class="left">
     {skill.linkedSkill.abilities.map((e) => e.name).join(", ")}
-    <a>?</a>
+    <Dialog>
+      <h3>{skill.name} Abilities</h3>
+      {#each skill.linkedSkill.abilities as ability, index}
+        <div>
+          <h4>{ability.name}</h4>
+          <p>{ability.desc}</p>
+        </div>
+      {/each}
+    </Dialog>
   </td>
 </tr>
 
 <style>
   .left {
     text-align: left;
+  }
+
+  td {
+    border: 1px solid;
+    padding: 2px;
+    padding-right: 10px;
   }
 </style>

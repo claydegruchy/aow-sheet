@@ -253,12 +253,12 @@ export class AOWCharacterForm {
 	get RangedDamageModifier(): number {
 		let b = 0
 		b += (this.DEX - 55) / 5
-		return b
+		return Math.max(b, 0)
 	}
 
 	get MeleeUnarmedModifier(): number {
 		let b = 0
-		return b
+		return Math.max(b, 0)
 	}
 
 
