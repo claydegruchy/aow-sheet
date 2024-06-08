@@ -63,32 +63,6 @@ h1 {
   text-align: center;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #b22222;
-  /* Dark red background for buttons */
-  color: #FFD700;
-  /* Gold text color for buttons */
-  cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s;
-}
-
-button:hover {
-  border-color: #FFD700;
-  /* Gold border on hover */
-  background-color: #a4161a;
-  /* Slightly different red on hover */
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -106,19 +80,7 @@ button:focus-visible {
     /* Darker red on hover */
   }
 
-  button {
-    background-color: #e63946;
-    /* Red background for buttons */
-    color: #ffffff;
-    /* White text color for buttons */
-  }
 
-  button:hover {
-    border-color: #b22222;
-    /* Dark red border on hover */
-    background-color: #d62828;
-    /* Slightly different red on hover */
-  }
 }
 
 
@@ -127,4 +89,174 @@ tbody td {}
 
 tbody tr:nth-child(even) {
   background-color: #eeeeee;
+}
+
+
+
+table,
+th,
+td {
+  border: 1px solid;
+  padding: 2px;
+  padding-right: 10px;
+}
+
+
+.character-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "name-desc morals"
+    "init-mov cp-rank"
+    "base-stats dr-bq-qi"
+    "skill-scores skill-scores"
+    "skill-scores skill-scores"
+    "abilities abilities"
+    "abilities abilities"
+    "abilities abilities"
+    "weapons weapons";
+}
+
+.name-desc,
+.morals,
+.cp-rank,
+.base-stats,
+.skill-scores,
+.init-mov,
+.dr-bq-qi,
+.equipment,
+.weapons,
+.abilities {
+  margin-bottom: 10px;
+  /* Add some spacing between sections */
+}
+
+@media (max-width: 768px) {
+
+  input,
+  select {
+    max-width: 150px;
+  }
+
+  table>* {
+    font-size: 30%;
+  }
+
+  section.abilities {
+    /* display: grid; */
+
+  }
+}
+
+.name-desc {
+  grid-area: name-desc;
+}
+
+.morals {
+  grid-area: morals;
+}
+
+.cp-rank {
+  grid-area: cp-rank;
+}
+
+.base-stats {
+  grid-area: base-stats;
+}
+
+.skill-scores {
+  grid-area: skill-scores;
+}
+
+.init-mov {
+  grid-area: init-mov;
+}
+
+.dr-bq-qi {
+  grid-area: dr-bq-qi;
+}
+
+.equipment {
+  grid-area: equipment;
+}
+
+.weapons {
+  grid-area: weapons;
+}
+
+.abilities {
+  grid-area: abilities;
+}
+
+/* 
+
+*/
+
+
+
+
+
+/* 
+
+
+*/
+textarea,
+input[type="text"] {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  font-size: 16px;
+}
+
+label {
+  margin-top: 10px;
+  position: relative;
+  display: inline-block;
+  /* width: 100%; */
+  font-size: 12px;
+  color: #666;
+}
+
+label span {
+  position: absolute;
+  top: -10px;
+  left: 0px;
+  background: white;
+  padding: 0 5px;
+}
+
+
+input[type="text"],
+textarea,
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="date"],
+input[type="time"],
+input[type="search"],
+select {
+  padding: 12px 10px 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  font-size: 16px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="search"]:focus {
+  border-color: #007bff;
+}
+
+select+span {
+  background: #000000;
+  /* Change background color for select */
 }

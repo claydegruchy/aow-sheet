@@ -26,57 +26,65 @@
   }
 
   let lockSheet = false;
+  const toggleLock = () => (lockSheet = !lockSheet);
 </script>
 
-<h1>Character Sheet</h1>
-<label
-  >Lock Sheet
-  <input type="checkbox" bind:checked={lockSheet} />
-</label>
+<div class="fixed">
+  <button on:click={toggleLock}>{lockSheet ? "🔒" : "🔓"}</button>
+</div>
+
 <div class="character-form">
   <div class="name-desc">
     <div>
       <label>
-        Name:
+        <span>Name</span>
         <input disabled={lockSheet} type="text" bind:value={$character.name} />
       </label>
     </div>
     <div>
       <label>
-        Description:
-        <textarea bind:value={$character.Description} />
+        <span> Description </span>
+        <textarea disabled={lockSheet} bind:value={$character.Description} />
       </label>
     </div>
   </div>
 
   <div class="cp-rank">
     <label>
-      CP:
+      <span> CP</span>
       <input type="number" min="0" max="999" bind:value={$character.CP} />
     </label>
-    <div>
-      Rank: {$character.Rank}
-    </div>
+    <label>
+      <span> Rank</span>
+      <input type="number" min="0" max="10" disabled value={$character.Rank} />
+    </label>
   </div>
 
   <div class="morals">
     {#each ["Totally", "Very", "Somewhat"] as devotion, idx}
       <div>
-        {devotion}
-        <select bind:value={$character.MoralCodes[devotion]}>
-          <option value={-1}>-</option>
-          {#each moralCodes as moral, index}
-            <option value={index}>{moral}</option>
-          {/each}
-        </select>
+        <label>
+          <span>
+            {devotion}
+          </span>
+          <select
+            disabled={lockSheet}
+            bind:value={$character.MoralCodes[devotion]}
+          >
+            <option value={-1}>-</option>
+            {#each moralCodes as moral, index}
+              <option value={index}>{moral}</option>
+            {/each}
+          </select>
+        </label>
       </div>
     {/each}
   </div>
 
-  <div class="dr-bq-qi">
+  <div class="dr-bq-qi v-align">
     <div>
       <label>
-        BP:
+        <span> BP</span>
         <input
           type="number"
           min="0"
@@ -91,12 +99,15 @@
     </div>
 
     <div>
-      DR: {$character.DR}
+      <label>
+        <span>DR</span>
+        <input disabled type="number" min="0" max="10" value={$character.DR} />
+      </label>
     </div>
 
     <div>
       <label>
-        Qi:
+        <span>Qi</span>
         <input
           disabled={lockSheet}
           type="number"
@@ -109,18 +120,20 @@
   </div>
 
   <div class="init-mov">
-    <div>
-      INIT: {$character.INIT}
-    </div>
-    <div>
-      MOV: {$character.MOV}
-    </div>
+    <label>
+      <span>INIT</span>
+      <input disabled type="number" min="0" max="10" value={$character.INIT} />
+    </label>
+    <label>
+      <span>MOV</span>
+      <input disabled type="number" min="0" max="10" value={$character.MOV} />
+    </label>
   </div>
 
   <div class="base-stats">
     <div>
       <label>
-        STR:
+        <span> STR</span>
         <input
           disabled={lockSheet}
           type="number"
@@ -133,7 +146,7 @@
 
     <div>
       <label>
-        DEX:
+        <span> DEX</span>
         <input
           disabled={lockSheet}
           type="number"
@@ -146,7 +159,7 @@
 
     <div>
       <label>
-        LOG:
+        <span> LOG</span>
         <input
           disabled={lockSheet}
           type="number"
@@ -159,7 +172,7 @@
 
     <div>
       <label>
-        WIL:
+        <span> WIL</span>
         <input
           disabled={lockSheet}
           type="number"
@@ -173,7 +186,7 @@
 
   <div class="skill-scores">
     <section class="specialist skills">
-      <table class="skills">
+      <table class="theme">
         <thead>
           <tr>
             <th>Name</th>
@@ -206,67 +219,70 @@
       </section>
   </div>
 
-  <div class="abilities">
-    {#if $character.learnedTechniques.length > 0 || !lockSheet}
-      <h3>Techniques</h3>
-    {/if}
-    {#if !lockSheet}
-      <select multiple bind:value={$character.learnedTechniques}>
+  <section class="abilities">
+    <div class="techniques">
+      {#if $character.learnedTechniques.length > 0 || !lockSheet}
+        <h3>Techniques</h3>
+      {/if}
+      {#if !lockSheet}
+        <select multiple bind:value={$character.learnedTechniques}>
+          {#each techniques as technique, index}
+            {#if $character.allowedTechniques.includes(technique)}
+              <option value={technique.name}>{technique.name} </option>
+            {/if}
+          {/each}
+        </select>
+      {/if}
+      <div>
         {#each techniques as technique, index}
-          {#if $character.allowedTechniques.includes(technique)}
-            <option value={technique.name}>{technique.name} </option>
+          {#if $character.learnedTechniques.includes(technique.name)}
+            <SimpleCard class="red" {...technique} />
           {/if}
         {/each}
-      </select>
-    {/if}
-    <div>
-      {#each techniques as technique, index}
-        {#if $character.learnedTechniques.includes(technique.name)}
-          <SimpleCard class="red" {...technique} />
-        {/if}
-      {/each}
+      </div>
     </div>
-
-    {#if $character.spells.length > 0 || !lockSheet}
-      <h3>Spells</h3>
-    {/if}
-    {#if !lockSheet}
-      <select multiple bind:value={$character.spells}>
-        {#each spells as spell, index}
-          <option value={spell.name}>{spell.name}</option>
-        {/each}
-      </select>
-    {/if}
-    <div>
-      {#each spells as spell, index}
-        {#if $character.spells.includes(spell.name)}
-          <SpellCard {...spell} />
-        {/if}
-      {/each}
-    </div>
-  </div>
-
-  <div class="equipment">
-    {#if $character.equipment.length > 0 || !lockSheet}
-      <h3>equipment</h3>
-    {/if}
-    {#if !lockSheet}
-      <select multiple bind:value={$character.equipment}>
-        {#each [...new Set(equipment.reduce((a, c) => [...a, c.itemType], []))] as type, i}
-          <optgroup label={type}>
-            {#each equipment.filter((e) => e.itemType == type) as g, index}
-              <option value={g.name}>[{g.cost}]{g.name}</option>
-            {/each}
-          </optgroup>
-        {/each}
-      </select>
-    {/if}
-
-    {#each equipment as x, i}
-      {#if $character.equipment.includes(x.name)}
-        <ItemCard item={x} />
+    <div class="spells">
+      {#if $character.spells.length > 0 || !lockSheet}
+        <h3>Spells</h3>
       {/if}
-    {/each}
+      {#if !lockSheet}
+        <select multiple bind:value={$character.spells}>
+          {#each spells as spell, index}
+            <option value={spell.name}>{spell.name}</option>
+          {/each}
+        </select>
+      {/if}
+      <div>
+        {#each spells as spell, index}
+          {#if $character.spells.includes(spell.name)}
+            <SpellCard {...spell} />
+          {/if}
+        {/each}
+      </div>
+    </div>
+
+    <div class="gear">
+      {#if $character.equipment.length > 0 || !lockSheet}
+        <h3>equipment</h3>
+      {/if}
+      {#if !lockSheet}
+        <select class="thin" multiple bind:value={$character.equipment}>
+          {#each [...new Set(equipment.reduce((a, c) => [...a, c.itemType], []))] as type, i}
+            <optgroup label={type}>
+              {#each equipment.filter((e) => e.itemType == type) as g, index}
+                <option value={g.name}>[{g.cost}]{g.name}</option>
+              {/each}
+            </optgroup>
+          {/each}
+        </select>
+      {/if}
+
+      {#each equipment as x, i}
+        {#if $character.equipment.includes(x.name)}
+          <ItemCard item={x} />
+        {/if}
+      {/each}
+    </div>
     <div class="armour">
       {#if $character.armour.length > 0 || !lockSheet}
         <h3>armour</h3>
@@ -284,7 +300,7 @@
         {/if}
       {/each}
     </div>
-  </div>
+  </section>
 
   <div class="weapons">
     <h3>weapons</h3>
@@ -333,105 +349,21 @@
     /* padding: 1px; */
   }
 
-  table,
-  th,
-  td {
-    border: 1px solid;
-    padding: 2px;
-    padding-right: 10px;
+  .fixed {
+    position: fixed;
+    bottom: 2%;
+    right: 2%;
+    font-size: 150%;
+    cursor: pointer;
+  }
+  .fixed > button {
+    font-size: 0.8em;
   }
 
-  @media (max-width: 1px) {
-    .character-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-      grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-      gap: 0px 0px;
-      grid-auto-flow: row;
-      grid-template-areas:
-        "name-desc name-desc name-desc cp-rank morals morals"
-        "base-stats skill-scores skill-scores skill-scores skill-scores skill-scores"
-        "base-stats skill-scores skill-scores skill-scores skill-scores skill-scores"
-        "init-mov skill-scores skill-scores skill-scores skill-scores skill-scores"
-        "dr-bq-qi abilities abilities abilities abilities equipment"
-        ". abilities abilities abilities abilities equipment"
-        "weapons weapons weapons weapons weapons equipment";
-    }
-  }
-
-  @media (max-width: 76800000px) {
-    .character-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto;
-      grid-template-areas:
-        "name-desc name-desc"
-        "morals cp-rank"
-        "base-stats dr-bq-qi"
-        "init-mov ."
-        "skill-scores skill-scores"
-        "skill-scores skill-scores"
-        "abilities abilities"
-        "abilities abilities"
-        "equipment equipment"
-        "weapons weapons";
-    }
-
-    .name-desc,
-    .morals,
-    .cp-rank,
-    .base-stats,
-    .skill-scores,
-    .init-mov,
-    .dr-bq-qi,
-    .equipment,
-    .weapons,
-    .abilities {
-      margin-bottom: 10px; /* Add some spacing between sections */
-    }
-
-    table > * {
-      font-size: 20%;
-    }
-  }
-
-  .name-desc {
-    grid-area: name-desc;
-  }
-
-  .morals {
-    grid-area: morals;
-  }
-
-  .cp-rank {
-    grid-area: cp-rank;
-  }
-
-  .base-stats {
-    grid-area: base-stats;
-  }
-
-  .skill-scores {
-    grid-area: skill-scores;
-  }
-
-  .init-mov {
-    grid-area: init-mov;
-  }
-
-  .dr-bq-qi {
-    grid-area: dr-bq-qi;
-  }
-
-  .equipment {
-    grid-area: equipment;
-  }
-
-  .weapons {
-    grid-area: weapons;
-  }
-
-  .abilities {
-    grid-area: abilities;
+  .v-align {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 8px; /* Adjust vertical gap between items if needed */
+    text-align: left;
   }
 </style>

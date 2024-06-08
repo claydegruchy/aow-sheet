@@ -24,7 +24,7 @@
     </select>
     style
   </div>
-  <table>
+  <table class="format">
     <thead>
       <tr>
         <th>Name</th>
@@ -80,7 +80,7 @@
     border: 1px solid;
     padding: 2px;
     padding-right: 10px;
-    width: 0%;
+	width: 0%;
   }
 
   table {
