@@ -16,6 +16,7 @@
   import WeaponTable from "./WeaponTable.svelte";
 
   import { character } from "./store";
+  import InputButtons from "./InputButtons.svelte";
 
   function handleUpdate(event) {
     const { skill, value } = event.detail;
@@ -56,7 +57,9 @@
   <div class="cp-rank">
     <label>
       <span> CP</span>
-      <input type="number" min="0" max="999" bind:value={$character.CP} />
+      <InputButtons {lockSheet} v={"CP"}>
+        <input type="number" min="0" max="999" bind:value={$character.CP} />
+      </InputButtons>
     </label>
     <label>
       <span> Rank</span>
@@ -112,13 +115,15 @@
     <div>
       <label>
         <span>Qi</span>
-        <input
-          disabled={lockSheet}
-          type="number"
-          min="0"
-          max="999"
-          bind:value={$character.Qi}
-        />
+        <InputButtons {lockSheet} v={"Qi"}>
+          <input
+            disabled={lockSheet}
+            type="number"
+            min="0"
+            max="999"
+            bind:value={$character.Qi}
+          />
+        </InputButtons>
       </label>
     </div>
   </div>
@@ -138,52 +143,60 @@
     <div>
       <label>
         <span> STR</span>
-        <input
-          disabled={lockSheet}
-          type="number"
-          min="0"
-          max="999"
-          bind:value={$character.STR}
-        />
+        <InputButtons {lockSheet} v={"STR"}>
+          <input
+            disabled={lockSheet}
+            type="number"
+            min="0"
+            max="999"
+            bind:value={$character.STR}
+          />
+        </InputButtons>
       </label>
     </div>
 
     <div>
       <label>
         <span> DEX</span>
-        <input
-          disabled={lockSheet}
-          type="number"
-          min="0"
-          max="999"
-          bind:value={$character.DEX}
-        />
+        <InputButtons {lockSheet} v={"DEX"}>
+          <input
+            disabled={lockSheet}
+            type="number"
+            min="0"
+            max="999"
+            bind:value={$character.DEX}
+          />
+        </InputButtons>
       </label>
     </div>
 
     <div>
       <label>
         <span> LOG</span>
-        <input
-          disabled={lockSheet}
-          type="number"
-          min="0"
-          max="999"
-          bind:value={$character.LOG}
-        />
+        <InputButtons {lockSheet} v={"LOG"}>
+          <input
+            disabled={lockSheet}
+            type="number"
+            min="0"
+            max="999"
+            bind:value={$character.LOG}
+          />
+        </InputButtons>
       </label>
     </div>
 
     <div>
       <label>
         <span> WIL</span>
-        <input
-          disabled={lockSheet}
-          type="number"
-          min="0"
-          max="999"
-          bind:value={$character.WIL}
-        />
+        <InputButtons {lockSheet} v={"WIL"}>
+          <input
+            disabled={lockSheet}
+            type="number"
+            min="0"
+            max="999"
+            bind:value={$character.WIL}
+          />
+        </InputButtons>
       </label>
     </div>
   </div>
@@ -377,7 +390,7 @@
   .card-deck {
     display: flex;
     flex-wrap: wrap;
-	justify-content: space-around;
+    justify-content: space-around;
     gap: 5px;
   }
 </style>

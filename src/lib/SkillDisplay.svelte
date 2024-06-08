@@ -8,12 +8,22 @@
 
   const genericUpdate = (key, value) =>
     dispatch("update", { skill, value: { ...skill, [key]: value } });
+
+  const up = () => {
+    if (skill.level >= 6) return;
+    genericUpdate("level", (skill.level += 1));
+  };
+  const down = () => {
+    if (skill.level <= 0) return;
+    genericUpdate("level", (skill.level -= 1));
+  };
 </script>
 
 <tr>
   <td>{skill.name}</td>
   <td>{skill.baseAbility}/2 ({$character[skill.baseAbility]})</td>
   <td>
+    {#if !lockSheet}<button on:click={up}>🔼</button>{/if}
     <input
       type="number"
       min="0"
@@ -23,6 +33,7 @@
       on:change={(event) =>
         genericUpdate("level", Number(event?.target?.value || 0))}
     />
+    {#if !lockSheet}<button on:click={down}>🔽</button>{/if}
   </td>
   <td>
     <select

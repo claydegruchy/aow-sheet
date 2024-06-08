@@ -14,6 +14,7 @@
   <div>
     Warrior of the
     <select
+      disabled={lockSheet}
       bind:value={skill.style}
       on:change={(event) => genericUpdate("style", event?.target?.value || "")}
     >
@@ -43,6 +44,7 @@
             type="number"
             min="0"
             max="6"
+            disabled={lockSheet}
             bind:value={skill.level}
             on:change={(event) =>
               genericUpdate("level", Number(event?.target?.value || 0))}
@@ -51,7 +53,7 @@
         <td rowspan="2">
           <select
             bind:value={skill.relation}
-            disabled={skill.level <= 0}
+            disabled={skill.level <= 0 || lockSheet === true}
             on:change={(event) =>
               genericUpdate("relation", Number(event?.target?.value || 0))}
           >
@@ -80,7 +82,7 @@
     border: 1px solid;
     padding: 2px;
     padding-right: 10px;
-	width: 0%;
+    width: 0%;
   }
 
   table {
