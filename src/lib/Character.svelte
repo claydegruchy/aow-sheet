@@ -27,15 +27,16 @@
   let lockSheet = false;
   const toggleLock = () => (lockSheet = !lockSheet);
 
-  const upNumber = (e) => console.log(e);
+  let bpTemp = $character.BP;
+
+  let equipArmour = (armour) => {
+    $character.equipArmour(armour);
+    $character = $character;
+  };
 </script>
 
 <div class="fixed">
   <button on:click={toggleLock}>{lockSheet ? "🔒" : "🔓"}</button>
-</div>
-
-<div>
-  <button value="lmao" on:click={upNumber}>text</button>
 </div>
 
 <div class="character-form">
@@ -91,15 +92,24 @@
   <div class="dr-bq-qi v-align">
     <div>
       <label>
-        <span> BP</span>
-        <input
-          type="number"
-          min="0"
-          max={$character.BP}
-          value={$character.BP}
-          inputmode="numeric"
-        />
-        <a class="flip" on:click={() => ($character.BP = $character.BaseBP)}>
+        <span>BP ({$character.BP}/{$character.BaseBP})</span>
+        <InputButtons lockSheet={false} v={"BP"} max={$character.BaseBP}>
+          <input
+            disabled={lockSheet}
+            type="number"
+            min="0"
+            max="999"
+            bind:value={$character.BP}
+          />
+        </InputButtons>
+
+        <a
+          class="flip"
+          on:click={() => {
+            $character.BP = $character.BaseBP;
+            bpTemp = $character.BP;
+          }}
+        >
           ↩️
         </a>
       </label>
@@ -115,7 +125,7 @@
     <div>
       <label>
         <span>Qi</span>
-        <InputButtons {lockSheet} v={"Qi"}>
+        <InputButtons lockSheet={false} v={"Qi"}>
           <input
             disabled={lockSheet}
             type="number"
@@ -202,6 +212,11 @@
   </div>
 
   <div class="skill-scores">
+    <!-- prettier-ignore -->
+    <section class="warrior skills">
+			<WarriorSkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Warrior1} />
+			<WarriorSkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Warrior2} />
+		  </section>
     <section class="specialist skills">
       <table class="theme">
         <thead>
@@ -210,8 +225,8 @@
             <th>Base Ability</th>
             <th>Level</th>
             <th>P/S</th>
-            <th>%</th>
             <th>Notes</th>
+            <th>%</th>
           </tr>
         </thead>
 
@@ -229,11 +244,6 @@
       </tbody>
       </table>
     </section>
-    <!-- prettier-ignore -->
-    <section class="warrior skills">
-        <WarriorSkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Warrior1} />
-        <WarriorSkillDisplay {lockSheet} on:update={handleUpdate} {character} skill={$character.Warrior2} />
-      </section>
   </div>
 
   <section class="abilities">
@@ -315,7 +325,17 @@
       <div class="card-deck">
         {#each armour as x, i}
           {#if $character.armour.includes(x.name)}
-            <SimpleCard {...x} />
+            {#if $character.equippedArmour?.name == x.name}
+              <div>
+                <button on:click={() => equipArmour()}> Unequip </button>
+                <SimpleCard {...x} />
+              </div>
+            {:else}
+              <div>
+                <button on:click={() => equipArmour(x)}>Equip</button>
+                <SimpleCard {...x} />
+              </div>
+            {/if}
           {/if}
         {/each}
       </div>
@@ -326,13 +346,15 @@
     <h3>weapons</h3>
     {#if !lockSheet}
       <select multiple bind:value={$character.weapons}>
-        {#each [...new Set(weapons.reduce((a, c) => [...a, c.subType], []))] as type, i}
-          <optgroup label={type}>
-            {#each weapons.filter((e) => e.subType == type) as g, index}
-              <option value={g.name}
-                >[{g.cost}] {g.name}
-                {$character.trainedWithWeapon(g) ? "(T)" : ""}</option
-              >
+        {#each [true, false] as unusable, i}
+          <!-- {#each [...new Set(weapons.reduce((a, c) => [...a, c.subType], []))] as type, i} -->
+          <optgroup label={unusable ? "usable" : "unusable"}>
+            {#each weapons.filter((e) => $character.canUseWeapon(e) == unusable) as g, index}
+              <option value={g.name}>
+                [{g.cost}] {g.name}
+                {$character.trainedWithWeapon(g) ? "(T)" : ""}
+                {unusable ? "" : "\t[" + g.attributes.join(", ") + "]"}
+              </option>
             {/each}
           </optgroup>
         {/each}

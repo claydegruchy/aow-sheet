@@ -95,4 +95,8 @@
     background-color: pink;
   }
 
+  table{
+		border-collapse: collapse;
+  }
+
 </style>

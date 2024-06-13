@@ -61,6 +61,19 @@ export class AOWCharacterForm {
 	Name: string = "";
 	Description: string = "";
 	CP: number = 10;
+	Qi: number = 0;
+
+
+
+	STR: number = 1;
+	DEX: number = 1;
+	LOG: number = 1;
+	WIL: number = 1;
+	// main abilitiesƒ
+	// STR: number = 50;
+	// DEX: number = 55;
+	// LOG: number = 60;
+	// WIL: number = 65;
 
 	// rank is derived
 	get Rank(): number {
@@ -95,20 +108,13 @@ export class AOWCharacterForm {
 
 		return rank
 	};
-	// main abilitiesƒ
-	STR: number = 50;
-	DEX: number = 55;
-	LOG: number = 60;
-	WIL: number = 65;
-
 	//derived
 
 	get BaseBP(): number {
 		return Math.round(this.STR / 2) + Math.max(0, (10 * (this.Rank - 1)))
 	}
-	BP: number = this.BaseBP
 
-	Qi: number = 0;
+	BP: number = this.BaseBP
 
 	get MOV(): number {
 		// MOV (see movement page 57) begins at 8, add +1 if your STR is 65 or higher, add +1 if your DEX is 65 or higher. Apply your armor penalty, if any.
@@ -126,17 +132,19 @@ export class AOWCharacterForm {
 		return init
 	}
 
-	DR: number = 0;
+	get DR(): string {
+		return "0"
+	}
 
 
 
 
 	getSkillScore(ability: SkillScore | WarriorScore, stat: number): number {
 		let { requiredForAttempt } = ability.linkedSkill
-		if (!requiredForAttempt && ability.level == 0) return stat / 2
+		if (!requiredForAttempt && ability.level == 0) return Math.ceil(stat / 2)
 		if (ability.level == 0) return 0
 		let mod = 0
-		return stat / 2 + ability.level * 10 + ability.relation * 10;
+		return Math.ceil(stat / 2 + ability.level * 10 + ability.relation * 10);
 	};
 
 
@@ -191,6 +199,7 @@ export class AOWCharacterForm {
 
 
 	canUseWeapon = (weapon: Weapon) => {
+		if (weapon.attributes.length == 0) return true
 		for (const attrib of weapon.attributes) {
 			var [att, val] = attrib.split(" ")
 			if (this[att] < val) {
@@ -213,16 +222,17 @@ export class AOWCharacterForm {
 		return false
 	}
 
-	// equippedArmour?: Armour
+	equippedArmour?: Armour
 	// equippedWeapon?: Weapon
 
-	// equipArmour = (item?: Armour) => {
-	// 	if (!item) {
-	// 		this.equippedArmour = undefined
-	// 		return
-	// 	}
-	// 	this.equippedArmour = item
-	// }
+	equipArmour = (item?: Armour) => {
+		console.log("equip", item)
+		if (!item) {
+			this.equippedArmour = undefined
+			return
+		}
+		this.equippedArmour = item
+	}
 
 	// equipWeapon = (item?: Weapon) => {
 	// 	if (!item) {
@@ -345,7 +355,6 @@ export type Skill = {
 const warriorSkill: Skill = {
 	name: "Warrior",
 	desc: `This skill covers various martial arts styles. It represents expertise gained from training in kung fu, military service, or as a mercenary or xia. 
-	When chosen as a primary or secondary skill, bonuses apply to all future Warrior skills.
 	This skill can be used as an untrained fighting score; you just won’t have any kung fu techniques or other benefits of training.
 	When designating the Warrior skill as a primary or secondary skill, apply the bonus to all Warrior skills you take in the future.`,
 	score: `Note this skill has two scores as follows; melee equals half STR +10 per Warrior level (includes unarmed combat), and ranged equals half DEX +10 per Warrior level (includes thrown weapons).`,
@@ -1001,7 +1010,7 @@ const jian_longsword: Weapon = {
 	subType: "Melee",
 	hands: 1,
 	range: 0,
-	attributes: ["STR 50 & DEX 50"],
+	attributes: ["STR 50", "DEX 50"],
 	damage: "2D+1",
 	cost: "15tl",
 	desc: "A graceful longsword, embodying the elegance and precision of our ancient traditions.",
@@ -1027,7 +1036,7 @@ const lajatang: Weapon = {
 	subType: "Melee",
 	hands: 2,
 	range: 0,
-	attributes: ["STR 50 & DEX 50"],
+	attributes: ["STR 50", "DEX 50"],
 	damage: "2D",
 	cost: "12tl",
 	desc: "A polearm with multiple blades, wielded by our most skilled defenders against invaders.",
