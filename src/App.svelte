@@ -1,11 +1,12 @@
 <script lang="ts">
+  import AuthHandler from "./lib/AuthHandler.svelte";
   import Character from "./lib/Character.svelte";
-  // import writable
-  import { character } from "./lib/store";
 </script>
 
 <main>
-  <Character />
+  <AuthHandler>
+    <Character />
+  </AuthHandler>
 </main>
 
 <style>
