@@ -443,6 +443,13 @@ export class AOWCharacterForm {
 		}
 	}
 
+	skipNextWebWrite: boolean = false
+	// get dontNotify(): boolean {
+
+	// }
+	// set dontNotify(val): {
+	// 	_dontNotify
+	// }
 
 
 }

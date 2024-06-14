@@ -1,5 +1,5 @@
 <script>
-  import { character } from "./store";
+  import { character } from "./firebase";
   export let v;
   export let lockSheet;
   export let max = -1;

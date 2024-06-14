@@ -1,13 +1,17 @@
+import { writable, derived } from "svelte/store";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 import { getAuth } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
 
 // import sveltefire for easier stores
 import { docStore, collectionStore, userStore } from "sveltefire";
-// import { character, firebaseStatus } from "./store";
+// import  character sheet shit
+import { AOWCharacterForm } from "./dataTypes";
+
+
 
 
 
@@ -33,93 +37,91 @@ export const auth = getAuth(app);
 // init firestores
 export const user = userStore(auth);
 
-user.subscribe(async u => {
 
-	if (!u) return
+
+
+// setting up store for character
+export let character = writable();
+export let firebaseStatus = writable()
+
+
+let unsubscribeSnapshot: any = null
+let cloudCharacterRef: any = null
+export let cloudCharacter = writable()
+
+
+export let firebaseUserState = writable()
+
+
+
+user.subscribe(async u => {
+	if (!u) {
+		character.set(null)
+		return
+	}
 
 	const ref = doc(firestore, "users", u?.uid)
 	const docSnap = await getDoc(ref);
+	let t = new AOWCharacterForm()
 	if (!docSnap.exists()) {
-		// firebaseStatus.set("Creating new user")
-		await setDoc(ref, { email: u.email, });
-		// firebaseStatus.set("New user creation complete")
+		firebaseUserState.set("Creating new user")
+		await setDoc(ref, { email: u.email, character: new AOWCharacterForm().webExport });
+		character.set(t)
+		firebaseUserState.set("User created")
 
 	} else {
 		console.log("existing user found", docSnap.data().email)
+		t.redefine(docSnap.data().character)
+		character.set(t)
+		firebaseUserState.set("Loaded existing character")
 	}
 
-	/*
-		// const post = docStore(firestore, "users/" + u?.uid);
-		// console.log({ post }, u?.uid,)
-	
-	
-	
-	
-	
-		//   gets a single docutment as a store
-		//   const post = docStore(firestore, "users/CzGrC8nwFC2Go1DQ9FHq");
-		//   console.log($post?.email);
-	
-		//   handles the sending of data to firebase
-		//   import { debounce } from "./store";
-		//   import { AOWCharacterForm } from "./dataTypes";
-	
-		//   var debounced_firebaseUpdate = debounce(async (characterObject: Object) => {
-		//     console.log({ auth, user: $user?.uid });
-		//     if ($character.id.length < 5 || $character.Name.length < 1) return;
-		//     if (!$user) return;
-		//     let payload = {
-		//       ...characterObject,
-		//       uid: $user.uid,
-		//     };
-		//     console.log("sending to firebase...", { payload });
-		//     let outcome = await setDoc(
-		//       doc(firestore, "characters", $character.id),
-		//       payload
-		//     );
-		//     console.log({ outcome });
-		//   }, 500);
-	
-		//   character.subscribe((characterForm) => {
-		//     debounced_firebaseUpdate(characterForm.webExport);
-		//   });
-	
-		 */
+	cloudCharacterRef = doc(firestore, 'users', u.uid);
+
+	// Subscribe to Firestore document updates
+	if (unsubscribeSnapshot) unsubscribeSnapshot(); // Unsubscribe from previous listener
+	unsubscribeSnapshot = onSnapshot(cloudCharacterRef, (doc) => {
+		firebaseUserState.set("Received downstream")
+		if (doc.exists()) {
+			let t = new AOWCharacterForm()
+			t.redefine(doc.data().character)
+			t.skipNextWebWrite = true
+			character.set(t);
+			console.log("updated cloudCharacter", doc.data().character)
+		}
+	});
+
+
+	console.log({ cloudCharacterRef })
+
 })
 
+export const writeDataToFirebase = debounce(async (data: Object) => {
+	console.group("writeDataToFirebase")
+	firebaseUserState.set("Sending...")
+	let { currentUser: { uid, email } } = auth
+	if (!uid) return
+	let path = "users/" + uid + "/character"
+	console.log("writing", path, data)
 
-export const cloudCharacter = docStore(firestore, 'users/' + user?.uid);
+
+	const ref = doc(firestore, "users", uid)
+	await setDoc(ref, { email, character: data });
+	firebaseUserState.set(null)
 
 
-export const writeCharacter = debounce(async (data: Object) => {
-	console.log("writing", { uid: auth?.currentUser?.uid, data })
-	// console.log({ auth, user: $user?.uid });
-	// if ($character.id.length < 5 || $character.Name.length < 1) return;
-	// if (!$user) return;
-	// let payload = {
-	// 	...characterObject,
-	// 	uid: $user.uid,
-	// };
-	// console.log("sending to firebase...", { payload });
-	// let outcome = await setDoc(
-	// 	writeToStore($user.uid)
-	// 	doc(firestore, "characters", $character.id),
-	// 	payload
-	// );
-	// console.log({ outcome });
+
+	console.groupEnd()
 }, 500);
 
 
-// export const writeCharacter = (data) => console.log("writing", { uid: $user?.uid, data })
 
 
-
-
-
-
-export function debounce(func, delay) {
+export function debounce(func: Function, delay: number) {
 	let timeoutId;
+
 	return function (...args) {
+		firebaseUserState.set("Sending...")
 		clearTimeout(timeoutId);
 		timeoutId = setTimeout(() => {
 			func.apply(this, args);
@@ -128,16 +130,12 @@ export function debounce(func, delay) {
 }
 
 
-
-import { AOWCharacterForm } from "./dataTypes";
-import { writable } from "svelte/store";
-
-export let character = writable(new AOWCharacterForm());
-
-export let firebaseStatus = writable()
-
-
-character.subscribe((characterForm) => {
+character.subscribe((characterForm: any) => {
+	console.log(characterForm)
+	if (characterForm?.skipNextWebWrite) {
+		characterForm.skipNextWebWrite = false
+		return
+	}
 	let e = characterForm?.webExport;
-	if (e) writeCharacter(characterForm.webExport);
+	if (e) writeDataToFirebase(characterForm.webExport);
 });

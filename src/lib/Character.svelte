@@ -15,8 +15,9 @@
   import WarriorSkillDisplay from "./WarriorSkillDisplay.svelte";
   import WeaponTable from "./WeaponTable.svelte";
 
-  import { character } from "./store";
+  import { character } from "./firebase";
   import InputButtons from "./InputButtons.svelte";
+  import StatusIndicator from "./StatusIndicator.svelte";
 
   function handleUpdate(event) {
     const { skill, value } = event.detail;
@@ -35,6 +36,7 @@
 
 {#if $character}
   <div class="fixed">
+    <StatusIndicator />
     <button on:click={toggleLock}>{lockSheet ? "🔒" : "🔓"}</button>
   </div>
 

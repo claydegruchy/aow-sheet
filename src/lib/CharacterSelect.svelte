@@ -6,7 +6,6 @@
 
   const user = userStore(auth);
 
-  import { debounce } from "./store";
   import { AOWCharacterForm } from "./dataTypes";
 
   var debounced_firebaseUpdate = debounce(async (characterObject: Object) => {
@@ -82,7 +81,4 @@
 </div>
 
 <style>
-  small {
-    font-size: xx-small;
-  }
 </style>
