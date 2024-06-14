@@ -40,9 +40,15 @@ export type WarriorScore = {
 
 export const moralCodes = ['Kind', 'Cruel', 'Focused', 'Unfocused', 'Selfless', 'Selfish', 'Honorable', 'Deceitful', 'Brave', 'Cowardly']
 
-
+// function that tick once per second
 
 export class AOWCharacterForm {
+
+	id: string = ""
+
+
+
+
 
 	// skills
 	Alchemy: SkillScore = { name: "Alchemy", baseAbility: "LOG", level: 0, relation: 0, linkedSkill: alchemistSkill };
@@ -65,15 +71,42 @@ export class AOWCharacterForm {
 
 
 
+	// main abilitiesƒ
 	STR: number = 1;
 	DEX: number = 1;
 	LOG: number = 1;
 	WIL: number = 1;
-	// main abilitiesƒ
+
+
 	// STR: number = 50;
 	// DEX: number = 55;
 	// LOG: number = 60;
 	// WIL: number = 65;
+
+	//derived
+
+	get BaseBP(): number {
+		return Math.round(this.STR / 2) + Math.max(0, (10 * (this.Rank - 1)))
+	}
+
+	BP: number = this.BaseBP
+
+
+	MoralCodes = {
+		Totally: -1,
+		Somewhat: -1,
+		Very: -1
+	}
+
+	learnedTechniques: string[] = []
+	spells: string[] = []
+
+
+	equipment: Item[] = []
+	armour: Armour[] = []
+	weapons: Weapon[] = []
+
+
 
 	// rank is derived
 	get Rank(): number {
@@ -108,13 +141,10 @@ export class AOWCharacterForm {
 
 		return rank
 	};
-	//derived
 
-	get BaseBP(): number {
-		return Math.round(this.STR / 2) + Math.max(0, (10 * (this.Rank - 1)))
-	}
 
-	BP: number = this.BaseBP
+
+
 
 	get MOV(): number {
 		// MOV (see movement page 57) begins at 8, add +1 if your STR is 65 or higher, add +1 if your DEX is 65 or higher. Apply your armor penalty, if any.
@@ -184,18 +214,7 @@ export class AOWCharacterForm {
 		return t
 	}
 
-	MoralCodes = {
-		Totally: -1,
-		Somewhat: -1,
-		Very: -1
-	}
 
-	learnedTechniques: string[] = []
-	spells: string[] = []
-
-	equipment: Item[] = []
-	armour: Armour[] = []
-	weapons: Weapon[] = []
 
 
 	canUseWeapon = (weapon: Weapon) => {
@@ -329,6 +348,103 @@ export class AOWCharacterForm {
 	// 		score: this.STR / 2 // Or other logic based on the weapon type
 	// 	}));
 	// }
+
+	redefine(char: Object): AOWCharacterForm {
+
+		const {
+			id,
+
+			Name,
+			Description,
+
+			CP,
+			Qi,
+
+			STR,
+			DEX,
+			LOG,
+			WIL,
+
+			MoralCodes,
+			learnedTechniques,
+			spells,
+
+			equipment,
+			armour,
+			weapons,
+		} = char
+		this.id = id
+		this.Name = Name
+		this.Description = Description
+		this.CP = CP
+		this.Qi = Qi
+		this.STR = STR
+		this.DEX = DEX
+		this.LOG = LOG
+		this.WIL = WIL
+		this.MoralCodes = MoralCodes
+		this.learnedTechniques = learnedTechniques
+		this.spells = spells
+
+		return this
+
+
+
+	}
+
+	get webExport(): Object {
+		const {
+
+			id,
+
+			Name,
+			Description,
+
+			CP,
+			Qi,
+
+			STR,
+			DEX,
+			LOG,
+			WIL,
+
+			MoralCodes,
+			learnedTechniques,
+			spells,
+
+			equipment,
+			armour,
+			weapons,
+
+		} = this
+
+		return {
+			id,
+
+			Name,
+			Description,
+
+			CP,
+			Qi,
+
+			STR,
+			DEX,
+			LOG,
+			WIL,
+
+			MoralCodes,
+			learnedTechniques,
+			spells,
+
+			equipment,
+			armour,
+			weapons,
+
+		}
+	}
+
+
+
 }
 
 
