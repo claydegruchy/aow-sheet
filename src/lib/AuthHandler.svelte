@@ -4,8 +4,7 @@
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import type { Auth } from "firebase/auth";
 
-  import { firestore, auth } from "./firebase";
-  import CharacterSelect from "./CharacterSelect.svelte";
+  import { firestore, auth, cloudCharacter } from "./firebase";
 
   async function signInWithGoogle(auth: Auth) {
     const provider = new GoogleAuthProvider();
@@ -16,10 +15,11 @@
 </script>
 
 <FirebaseApp {auth} {firestore}>
+  {cloudCharacter?.id}
   <SignedIn let:user let:signOut>
     <button on:click={signOut}>👤 {user.displayName}</button>
     <!-- character selection -->
-    <CharacterSelect />
+    <!-- <CharacterSelect /> -->
   </SignedIn>
 
   <SignedOut let:auth>
