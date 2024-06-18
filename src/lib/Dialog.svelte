@@ -5,13 +5,13 @@
   }
 </script>
 
-  <a on:click={toggle}>?</a>
-  <dialog {open}>
-    <slot />
-    <form method="dialog">
-      <button class="close">X</button>
-    </form>
-  </dialog>
+<a on:click={toggle}>?</a>
+<dialog {open}>
+  <slot />
+  <form method="dialog">
+    <button class="close">X</button>
+  </form>
+</dialog>
 
 <style>
   /* top right close button */
@@ -24,5 +24,6 @@
   dialog {
     margin-left: 1em;
     margin-right: 1em;
+    font-weight: normal;
   }
 </style>

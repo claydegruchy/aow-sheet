@@ -63,7 +63,7 @@
       <label>
         <span> CP</span>
         <InputButtons {lockSheet} v={"CP"}>
-          <input type="number" min="0" max="999" bind:value={$character.CP} />
+          <input type="number" disabled min="0" max="999" bind:value={$character.CP} />
         </InputButtons>
       </label>
       <label>

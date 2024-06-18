@@ -1,3 +1,30 @@
+/* Light mode */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #ffffff;
+    color: #333333;
+    /* Dark text on light background */
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #eeeeee;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #333333;
+    color: #ffffff;
+    /* Light text on dark background */
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #535353;
+  }
+}
+
+
 :root {
   font-family: 'Noto Serif SC', 'KaiTi', 'SimHei', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -87,9 +114,7 @@ h1 {
 /* alternating colours table */
 tbody td {}
 
-tbody tr:nth-child(even) {
-  background-color: #eeeeee;
-}
+
 
 
 

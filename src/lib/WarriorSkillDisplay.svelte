@@ -27,33 +27,11 @@
   <table class="format">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Ability</th>
-        <th>Level</th>
-        <th>Relation</th>
-        <th class="score">  %</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td rowspan="2">
-          {#if lockSheet}
-            {skill.style || "Untrained"}
-          {:else}
-            <select
-              disabled={lockSheet}
-              bind:value={skill.style}
-              on:change={(event) =>
-                genericUpdate("style", event?.target?.value || "")}
-            >
-              <option value={""}>Untrained</option>
-              {#each kungFuStyles as style, index}
-                <option value={style.name}>{style.name}</option>
-              {/each}
-            </select>
-          {/if}
+        <th>
+          Warrior
 
-          <Dialog >
+          <Dialog>
+            
             <h3>{skill.name}</h3>
             <p>
               {skill.linkedSkill.desc}
@@ -97,6 +75,31 @@
               {/if}
             </p> -->
           </Dialog>
+        </th>
+        <th>Ability</th>
+        <th>Level</th>
+        <th>Relation</th>
+        <th class="score"> %</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="2">
+          {#if lockSheet}
+            {skill.style || "Untrained"}
+          {:else}
+            <select
+              disabled={lockSheet}
+              bind:value={skill.style}
+              on:change={(event) =>
+                genericUpdate("style", event?.target?.value || "")}
+            >
+              <option value={""}>Untrained</option>
+              {#each kungFuStyles as style, index}
+                <option value={style.name}>{style.name}</option>
+              {/each}
+            </select>
+          {/if}
         </td>
         <td>Melee (STR {$character.STR})</td>
         <td rowspan="2">

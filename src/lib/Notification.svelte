@@ -4,7 +4,7 @@
   export let close;
 
   let elapsed = 0;
-  let duration = 5000;
+  let duration = 3000;
 
   let last_time = window.performance.now();
   let frame: number;
@@ -17,8 +17,8 @@
 
     last_time = time;
 
-    // if (elapsed >= duration) close(id);
-    if (elapsed >= duration) elapsed = 0;
+    if (elapsed >= duration) close(id);
+    // if (elapsed >= duration) elapsed = 0;
   })();
 
   onDestroy(() => {

@@ -53,10 +53,10 @@ export let cloudCharacter = writable()
 export let firebaseConnectionState = writable()
 
 export let notifications = writable([
-	{ text: "you took 1 damage ", id: "bntdncgthucdiuulebjjldkfgrfiikkd" },
-	{ text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkfgrfikd" },
-	{ text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkffiikkd" },
-	{ text: "you took 1 damage", id: "bntdncgthucdiuulebjdkfgrfiikkd" },
+	// { text: "you took 1 damage ", id: "bntdncgthucdiuulebjjldkfgrfiikkd" },
+	// { text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkfgrfikd" },
+	// { text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkffiikkd" },
+	// { text: "you took 1 damage", id: "bntdncgthucdiuulebjdkfgrfiikkd" },
 	{ text: "you gained 1 hp", id: "unlejbnjdkjkkkcnflndriteubfggele" }
 ])
 export let notifyUser = (text: string) => {
@@ -112,18 +112,12 @@ user.subscribe(async u => {
 					push: false
 				});
 
-				// writeDataToFirebase
-				// const ref = doc(firestore, "users", uid)
-				// await setDoc(ref, { email, character: data });
-				// firebaseConnectionState.set(null)
-
 			}
 		}
 		firebaseConnectionState.set(null)
 	});
 
 
-	console.log({ cloudCharacterRef })
 
 })
 

@@ -349,7 +349,7 @@ export class AOWCharacterForm {
 	// 	}));
 	// }
 
-	redefine(char: Object): AOWCharacterForm {
+	redefine(char: any): AOWCharacterForm {
 
 		const {
 			id,
@@ -374,14 +374,14 @@ export class AOWCharacterForm {
 			weapons,
 		} = char
 		this.id = id
-		this.Name = Name
-		this.Description = Description
-		this.CP = CP
-		this.Qi = Qi
-		this.STR = STR
-		this.DEX = DEX
-		this.LOG = LOG
-		this.WIL = WIL
+		this.Name = Name || ""
+		this.Description = Description || ""
+		this.CP = CP || 0
+		this.Qi = Qi || 0
+		this.STR = STR || 0
+		this.DEX = DEX || 0
+		this.LOG = LOG || 0
+		this.WIL = WIL || 0
 		this.MoralCodes = MoralCodes
 		this.learnedTechniques = learnedTechniques
 		this.spells = spells
