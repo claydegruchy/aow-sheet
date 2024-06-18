@@ -36,7 +36,6 @@
 
 {#if $character}
   <div class="fixed">
-    <StatusIndicator />
     <button on:click={toggleLock}>{lockSheet ? "🔒" : "🔓"}</button>
   </div>
 

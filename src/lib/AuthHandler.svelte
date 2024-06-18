@@ -4,7 +4,7 @@
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import type { Auth } from "firebase/auth";
 
-  import { firestore, auth, firebaseUserState } from "./firebase";
+  import { firestore, auth } from "./firebase";
   import StatusIndicator from "./StatusIndicator.svelte";
 
   async function signInWithGoogle(auth: Auth) {
@@ -16,11 +16,10 @@
 </script>
 
 <FirebaseApp {auth} {firestore}>
-  
   <SignedIn let:user let:signOut>
+    <StatusIndicator />
+
     <button on:click={signOut}>👤 {user.displayName}</button>
-    <!-- character selection -->
-    <!-- <CharacterSelect /> -->
   </SignedIn>
 
   <SignedOut let:auth>

@@ -1,8 +1,8 @@
 import { writable, derived } from "svelte/store";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
+// import { getAnalytics } from "firebase/analytics";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { getAuth } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
 
@@ -30,7 +30,7 @@ console.log("Starting firebase...")
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
+// export const analytics = getAnalytics(app);
 export const firestore = getFirestore(app);
 export const auth = getAuth(app);
 
@@ -42,7 +42,6 @@ export const user = userStore(auth);
 
 // setting up store for character
 export let character = writable();
-export let firebaseStatus = writable()
 
 
 let unsubscribeSnapshot: any = null
@@ -50,7 +49,23 @@ let cloudCharacterRef: any = null
 export let cloudCharacter = writable()
 
 
-export let firebaseUserState = writable()
+
+export let firebaseConnectionState = writable()
+
+export let notifications = writable([
+	{ text: "you took 1 damage ", id: "bntdncgthucdiuulebjjldkfgrfiikkd" },
+	{ text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkfgrfikd" },
+	{ text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkffiikkd" },
+	{ text: "you took 1 damage", id: "bntdncgthucdiuulebjdkfgrfiikkd" },
+	{ text: "you gained 1 hp", id: "unlejbnjdkjkkkcnflndriteubfggele" }
+])
+export let notifyUser = (text: string) => {
+	notifications.update(items => {
+		items.push({ text, id: Math.random() + " " })
+		return items
+	})
+}
+
 
 
 
@@ -60,35 +75,51 @@ user.subscribe(async u => {
 		return
 	}
 
+	// handle creation of new users 
 	const ref = doc(firestore, "users", u?.uid)
 	const docSnap = await getDoc(ref);
 	let t = new AOWCharacterForm()
 	if (!docSnap.exists()) {
-		firebaseUserState.set("Creating new user")
-		await setDoc(ref, { email: u.email, character: new AOWCharacterForm().webExport });
+		firebaseConnectionState.set("Creating new user")
+		await setDoc(ref, { push: false, email: u.email, character: new AOWCharacterForm().webExport });
 		character.set(t)
-		firebaseUserState.set("User created")
+		firebaseConnectionState.set("User created")
 
 	} else {
+		// handle loading of existing users characte
 		console.log("existing user found", docSnap.data().email)
 		t.redefine(docSnap.data().character)
 		character.set(t)
-		firebaseUserState.set("Loaded existing character")
+		firebaseConnectionState.set("Loaded existing character")
 	}
 
 	cloudCharacterRef = doc(firestore, 'users', u.uid);
 
-	// Subscribe to Firestore document updates
+	// handles push updates from the cloud
 	if (unsubscribeSnapshot) unsubscribeSnapshot(); // Unsubscribe from previous listener
 	unsubscribeSnapshot = onSnapshot(cloudCharacterRef, (doc) => {
-		firebaseUserState.set("Received downstream")
+		firebaseConnectionState.set("Received downstream")
 		if (doc.exists()) {
 			let t = new AOWCharacterForm()
-			t.redefine(doc.data().character)
+			let { push, ...data } = doc.data()
+			t.redefine(data.character)
 			t.skipNextWebWrite = true
 			character.set(t);
-			console.log("updated cloudCharacter", doc.data().character)
+			console.log("updated cloudCharacter", data.character)
+			if (push) {
+				notifyUser(push)
+				updateDoc(cloudCharacterRef, {
+					push: false
+				});
+
+				// writeDataToFirebase
+				// const ref = doc(firestore, "users", uid)
+				// await setDoc(ref, { email, character: data });
+				// firebaseConnectionState.set(null)
+
+			}
 		}
+		firebaseConnectionState.set(null)
 	});
 
 
@@ -98,7 +129,7 @@ user.subscribe(async u => {
 
 export const writeDataToFirebase = debounce(async (data: Object) => {
 	console.group("writeDataToFirebase")
-	firebaseUserState.set("Sending...")
+	firebaseConnectionState.set("Sending...")
 	let { currentUser: { uid, email } } = auth
 	if (!uid) return
 	let path = "users/" + uid + "/character"
@@ -107,7 +138,7 @@ export const writeDataToFirebase = debounce(async (data: Object) => {
 
 	const ref = doc(firestore, "users", uid)
 	await setDoc(ref, { email, character: data });
-	firebaseUserState.set(null)
+	firebaseConnectionState.set(null)
 
 
 
@@ -121,7 +152,7 @@ export function debounce(func: Function, delay: number) {
 	let timeoutId;
 
 	return function (...args) {
-		firebaseUserState.set("Sending...")
+		firebaseConnectionState.set("Sending...")
 		clearTimeout(timeoutId);
 		timeoutId = setTimeout(() => {
 			func.apply(this, args);

@@ -1,13 +1,13 @@
 <script>
-  import { firebaseUserState } from "./firebase";
+  import { firebaseConnectionState } from "./firebase";
   import { SignedIn } from "sveltefire";
 </script>
 
 <SignedIn>
   <small>
-    <div class={$firebaseUserState ? "spinner" : ""}></div>
+    <div class={$firebaseConnectionState ? " shimmer-bar" : ""}></div>
     <div>
-      {$firebaseUserState || "Saved"}
+      {$firebaseConnectionState || "Saved"}
     </div>
   </small>
 </SignedIn>
@@ -29,6 +29,32 @@
     }
     100% {
       transform: rotate(360deg);
+    }
+  }
+
+  .shimmer-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 223, 0, 0) 25%,
+      rgba(255, 223, 0, 0.5) 50%,
+      rgba(255, 223, 0, 0) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    z-index: 9999;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
     }
   }
 </style>
