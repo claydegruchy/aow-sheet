@@ -10,13 +10,13 @@
   };
 </script>
 
-<div class="notification-container">
+<section class="notification-container">
   {#each $notifications as n}
     <Notification id={n.id} {close}>
       {n.text}
     </Notification>
   {/each}
-</div>
+</section>
 
 <style>
   .notification-container {
@@ -32,6 +32,16 @@
     max-width: 400px;
     border-radius: 5px;
     z-index: 1000;
-    background-color: white;
+  }
+
+  @media (prefers-color-scheme: light) {
+    .notification-container {
+      background-color: white;
+    }
+  }
+  @media (prefers-color-scheme: dark) {
+    .notification-container {
+      background-color: black;
+    }
   }
 </style>

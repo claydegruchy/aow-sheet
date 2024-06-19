@@ -31,11 +31,11 @@
 
 <style>
   div {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     touch-action: manipulation;
   }
   button {
-    height: 4em;
+    /* height: 4em; */
   }
 
   .disable-dbl-tap-zoom {

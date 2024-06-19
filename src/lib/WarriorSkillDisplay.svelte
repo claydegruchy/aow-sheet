@@ -31,7 +31,6 @@
           Warrior
 
           <Dialog>
-            
             <h3>{skill.name}</h3>
             <p>
               {skill.linkedSkill.desc}
@@ -50,36 +49,13 @@
                 <p>{ability.desc}</p>
               </div>
             {/each}
-            <!-- <p>
-              <label>
-                {expandStyles ? "Hide" : "Show"} List of Possible Styles
-                <span>
-                  <input hidden type="checkbox" bind:checked={expandStyles} />
-                </span>
-              </label>
-
-              {#if expandStyles}
-                {#each kungFuStyles as style, index}
-                  <h3>{style.name}</h3>
-                  <p>{style.desc}</p>
-                  <p>
-                    Uses: {style.weapons.map((w) => w.name).join(", ")}
-                  </p>
-                  <h4>Has Techniques</h4>
-                  <p>
-                    {#each style.techniques as technique, index}
-                      <SimpleCard {...technique} />
-                    {/each}
-                  </p>
-                {/each}
-              {/if}
-            </p> -->
           </Dialog>
         </th>
-        <th>Ability</th>
-        <th>Level</th>
-        <th>Relation</th>
         <th class="score"> %</th>
+        <th>Base Ability</th>
+        <th>Level</th>
+        <th>P/S</th>
+        <th>Notes</th>
       </tr>
     </thead>
     <tbody>
@@ -89,6 +65,7 @@
             {skill.style || "Untrained"}
           {:else}
             <select
+              class="thin"
               disabled={lockSheet}
               bind:value={skill.style}
               on:change={(event) =>
@@ -101,7 +78,11 @@
             </select>
           {/if}
         </td>
+        <td class="score">
+          {$character[skill.name + "MeleeScore"]}
+        </td>
         <td>Melee (STR {$character.STR})</td>
+
         <td rowspan="2">
           {#if !lockSheet}<button on:click={up}>🔼</button>{/if}
 
@@ -135,42 +116,46 @@
             S (+10)
           {/if}
         </td>
-        <td class="score">
-          {$character[skill.name + "MeleeScore"]}
+        <td rowspan="2">
+          {skill.linkedSkill.abilities.map((e) => e.name).join(", ")}
+          <Dialog>
+            <h3>{skill.name} Abilities</h3>
+            {#each skill.linkedSkill.abilities as ability, index}
+              <div>
+                <h4>{ability.name}</h4>
+                <p>{ability.desc}</p>
+              </div>
+            {/each}
+          </Dialog>
         </td>
       </tr>
       <tr>
-        <td>Ranged (DEX {$character.DEX})</td>
         <td class="score">
           {$character[skill.name + "RangedScore"]}
         </td>
+        <td>Ranged (DEX {$character.DEX})</td>
       </tr>
-      <tr> </tr>
-      <tr></tr>
     </tbody>
   </table>
 </div>
 
 <style>
-  td,
-  th {
-    border: 1px solid;
-    padding: 2px;
-    padding-right: 10px;
-    width: 0%;
-  }
-
   table {
     border-collapse: collapse;
-    width: 100%;
+    /* width: 100%; */
     text-align: left;
     /* black lines */
     border: 1px solid;
 
-    /* padding: 1px; */
+    /* padding: 1
+    px; */
   }
+
   .container {
-    border: 1px solid;
-    margin: 3px;
+    /* width: 100vw; */
+    padding-bottom: 10px;
+  }
+  .format {
+    /* width: 100vw; */
   }
 </style>

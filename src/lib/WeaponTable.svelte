@@ -61,7 +61,7 @@
         <th>Range</th>
         <th>Requires</th>
         <th>Dam</th>
-        <th>Roll</th>
+        <th class="score">%</th>
       </tr>
     </thead>
     <tbody>
@@ -81,7 +81,7 @@
           <td> {x.range || 0}</td>
           <td> {x.attributes} {x.meetRequirements ? "" : "❌"}</td>
           <td> {x.meetRequirements ? x.damage + ab(x.bonus) : "0"}</td>
-          <td>
+          <td class="score">
             {x.meetRequirements ? bs(x) : 0}
           </td>
         </tr>
@@ -95,8 +95,7 @@
     background-color: pink;
   }
 
-  table{
-		border-collapse: collapse;
+  table {
+    border-collapse: collapse;
   }
-
 </style>

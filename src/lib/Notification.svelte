@@ -35,12 +35,11 @@
 <style>
   .notification-box {
     padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #000000;
-    border-radius: 5px;
+    /* margin: 5px 0; */
+    border: 1px solid;
+    border-radius: 3px;
 
     position: relative;
-    background-color: white;
     touch-action: manipulation;
 
     display: flex;

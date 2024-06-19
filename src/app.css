@@ -24,82 +24,31 @@
   }
 }
 
-
-:root {
-  font-family: 'Noto Serif SC', 'KaiTi', 'SimHei', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #e63946;
-  /* Red for links */
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #d62828;
-  /* Darker red on hover */
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background-image: url('path/to/your/chinese-pattern-background.jpg');
-  /* Optional background image */
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  font-family: 'ZCOOL XiaoWei', serif;
-  /* Stylized font for headings */
-  color: #FFD700;
-  /* Gold color for headings */
-}
-
-.card {
-  /* padding: 2em; */
-  /* margin: 1em; */
-  /* background-color: rgba(0, 0, 0, 0.7); */
-  /* Semi-transparent background for cards */
-  /* border: 1px solid #FFD700; */
-  /* Gold border */
-  /* border-radius: 10px; */
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
+@media (width >=10000px) {
 
 
-@media (prefers-color-scheme: light) {
+
+
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    font-family: 'Noto Serif SC', 'KaiTi', 'SimHei', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   a {
+    font-weight: 500;
     color: #e63946;
     /* Red for links */
+    text-decoration: inherit;
   }
 
   a:hover {
@@ -107,126 +56,293 @@ h1 {
     /* Darker red on hover */
   }
 
+  body {
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+    background-image: url('path/to/your/chinese-pattern-background.jpg');
+    /* Optional background image */
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
 
+  h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+    font-family: 'ZCOOL XiaoWei', serif;
+    /* Stylized font for headings */
+    color: #FFD700;
+    /* Gold color for headings */
+  }
+
+  .card {
+    /* padding: 2em; */
+    /* margin: 1em; */
+    /* background-color: rgba(0, 0, 0, 0.7); */
+    /* Semi-transparent background for cards */
+    /* border: 1px solid #FFD700; */
+    /* Gold border */
+    /* border-radius: 10px; */
+  }
+
+  #app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+  }
+
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      color: #213547;
+      background-color: #ffffff;
+    }
+
+    a {
+      color: #e63946;
+      /* Red for links */
+    }
+
+    a:hover {
+      color: #d62828;
+      /* Darker red on hover */
+    }
+
+
+  }
+
+
+  /* alternating colours table */
+  tbody td {}
+
+
+
+
+
+  table,
+  th,
+  td {
+    border: 1px solid;
+    padding: 2px;
+    padding-right: 10px;
+  }
+
+
+  .character-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "name-desc morals"
+      "init-mov cp-rank"
+      "base-stats dr-bq-qi"
+      "skill-scores skill-scores"
+      "skill-scores skill-scores"
+      "weapons weapons"
+      "abilities abilities"
+      "abilities abilities"
+      "abilities abilities"
+    ;
+  }
+
+  .name-desc,
+  .morals,
+  .cp-rank,
+  .base-stats,
+  .skill-scores,
+  .init-mov,
+  .dr-bq-qi,
+  .equipment,
+  .weapons,
+  .abilities {
+    margin-bottom: 10px;
+    /* Add some spacing between sections */
+  }
+
+  @media (max-width: 768px) {
+
+    input,
+    select {
+      max-width: 150px;
+    }
+
+    table>* {
+      font-size: 30%;
+    }
+
+    section.abilities {
+      /* display: grid; */
+
+    }
+  }
+
+  .name-desc {
+    grid-area: name-desc;
+  }
+
+  .morals {
+    grid-area: morals;
+  }
+
+  .cp-rank {
+    grid-area: cp-rank;
+  }
+
+  .base-stats {
+    grid-area: base-stats;
+  }
+
+  .skill-scores {
+    grid-area: skill-scores;
+  }
+
+  .init-mov {
+    grid-area: init-mov;
+  }
+
+  .dr-bq-qi {
+    grid-area: dr-bq-qi;
+  }
+
+  .equipment {
+    grid-area: equipment;
+  }
+
+  .weapons {
+    grid-area: weapons;
+  }
+
+  .abilities {
+    grid-area: abilities;
+  }
+
+  /* 
+
+*/
+
+
+
+
+
+  /* 
+
+
+*/
+  textarea,
+  input[type="text"] {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    font-size: 16px;
+  }
+
+  label {
+    margin-top: 10px;
+    position: relative;
+    display: inline-block;
+    /* width: 100%; */
+    font-size: 12px;
+    color: #666;
+  }
+
+  label span {
+    position: absolute;
+    top: -10px;
+    left: 0px;
+    background: white;
+    padding: 0 5px;
+  }
+
+
+  input[type="text"],
+  textarea,
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="time"],
+  input[type="search"],
+  select {
+    padding: 12px 10px 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    font-size: 16px;
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="tel"]:focus,
+  input[type="date"]:focus,
+  input[type="time"]:focus,
+  input[type="search"]:focus {
+    border-color: #007bff;
+  }
+
+  select+span {
+    background: #000000;
+    /* Change background color for select */
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+
+    opacity: 1;
+
+  }
+
+
+
+
+
+  .score {
+    /* centre text, make bold, make slightly larger than context */
+    font-weight: bold;
+    font-size: larger;
+    text-align: center;
+  }
+
+
+  .thin {
+    width: 50px;
+  }
+
+  small {
+    font-size: xx-small;
+  }
 }
 
 
-/* alternating colours table */
-tbody td {}
-
-
-
-
+.thin {
+  width: 100%
+}
 
 table,
 th,
 td {
   border: 1px solid;
-  padding: 2px;
+  /* padding: 2px; */
+  /* padding-right: 10px; */
   padding-right: 10px;
 }
 
 
-.character-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
-  grid-template-areas:
-    "name-desc morals"
-    "init-mov cp-rank"
-    "base-stats dr-bq-qi"
-    "skill-scores skill-scores"
-    "skill-scores skill-scores"
-    "weapons weapons"
-    "abilities abilities"
-    "abilities abilities"
-    "abilities abilities"
-  ;
+td {
+  /* border: 1px solid; */
+  /* padding: 2px; */
 }
 
-.name-desc,
-.morals,
-.cp-rank,
-.base-stats,
-.skill-scores,
-.init-mov,
-.dr-bq-qi,
-.equipment,
-.weapons,
-.abilities {
-  margin-bottom: 10px;
-  /* Add some spacing between sections */
-}
-
-@media (max-width: 768px) {
-
-  input,
-  select {
-    max-width: 150px;
-  }
-
-  table>* {
-    font-size: 30%;
-  }
-
-  section.abilities {
-    /* display: grid; */
-
-  }
-}
-
-.name-desc {
-  grid-area: name-desc;
-}
-
-.morals {
-  grid-area: morals;
-}
-
-.cp-rank {
-  grid-area: cp-rank;
-}
-
-.base-stats {
-  grid-area: base-stats;
-}
-
-.skill-scores {
-  grid-area: skill-scores;
-}
-
-.init-mov {
-  grid-area: init-mov;
-}
-
-.dr-bq-qi {
-  grid-area: dr-bq-qi;
-}
-
-.equipment {
-  grid-area: equipment;
-}
-
-.weapons {
-  grid-area: weapons;
-}
-
-.abilities {
-  grid-area: abilities;
-}
-
-/* 
-
-*/
 
 
 
 
-
-/* 
-
-
-*/
 textarea,
 input[type="text"] {
   width: 100%;
@@ -282,19 +398,6 @@ input[type="search"]:focus {
   border-color: #007bff;
 }
 
-select+span {
-  background: #000000;
-  /* Change background color for select */
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-
-  opacity: 1;
-
-}
-
-
 
 
 
@@ -302,14 +405,18 @@ input[type=number]::-webkit-outer-spin-button {
   /* centre text, make bold, make slightly larger than context */
   font-weight: bold;
   font-size: larger;
-  text-align: center;
+  text-align: right;
 }
 
 
-.thin {
-  width: 50px;
+a {
+  font-weight: 500;
+  color: #e63946;
+  /* Red for links */
+  text-decoration: inherit;
 }
 
-small {
-  font-size: xx-small;
+a:hover {
+  color: #d62828;
+  /* Darker red on hover */
 }

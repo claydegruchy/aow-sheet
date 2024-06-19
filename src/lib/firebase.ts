@@ -55,8 +55,8 @@ export let firebaseConnectionState = writable()
 export let notifications = writable([
 	// { text: "you took 1 damage ", id: "bntdncgthucdiuulebjjldkfgrfiikkd" },
 	// { text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkfgrfikd" },
-	// { text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkffiikkd" },
-	// { text: "you took 1 damage", id: "bntdncgthucdiuulebjdkfgrfiikkd" },
+	{ text: "you took 1 damage", id: "bntdncgthucdiuulebjjldkffiikkd" },
+	{ text: "you took 1 damage", id: "bntdncgthucdiuulebjdkfgrfiikkd" },
 	{ text: "you gained 1 hp", id: "unlejbnjdkjkkkcnflndriteubfggele" }
 ])
 export let notifyUser = (text: string) => {

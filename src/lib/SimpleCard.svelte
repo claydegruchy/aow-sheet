@@ -57,9 +57,8 @@
 
 <style>
   .card {
-    width: 30%;
-    border: 1px solid black;
+    border: 1px solid ;
     padding: 5px;
-    min-width: 140px;
+    min-width: 150px;
   }
 </style>

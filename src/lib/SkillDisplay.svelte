@@ -35,11 +35,13 @@
       {/if}
       <h4>Ranks</h4>
       <p>{skill.linkedSkill.titles.join(", ")}</p>
-
-      
     </Dialog>
   </td>
+  <td class="score">
+    {$character[skill.name + "Score"]}
+  </td>
   <td>{skill.baseAbility}/2 ({$character[skill.baseAbility]})</td>
+
   <td>
     {#if !lockSheet}<button on:click={up}>🔼</button>{/if}
     <input
@@ -84,19 +86,10 @@
       {/each}
     </Dialog>
   </td>
-  <td class="score">
-    {$character[skill.name + "Score"]}
-  </td>
 </tr>
 
 <style>
   .left {
     text-align: left;
-  }
-
-  td {
-    border: 1px solid;
-    padding: 2px;
-    padding-right: 10px;
   }
 </style>

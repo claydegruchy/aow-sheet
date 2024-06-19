@@ -63,7 +63,13 @@
       <label>
         <span> CP</span>
         <InputButtons {lockSheet} v={"CP"}>
-          <input type="number" disabled min="0" max="999" bind:value={$character.CP} />
+          <input
+            type="number"
+            disabled
+            min="0"
+            max="999"
+            bind:value={$character.CP}
+          />
         </InputButtons>
       </label>
       <label>
@@ -243,11 +249,11 @@
           <thead>
             <tr>
               <th>Name</th>
+              <th>%</th>
               <th>Base Ability</th>
               <th>Level</th>
               <th>P/S</th>
               <th>Notes</th>
-              <th>%</th>
             </tr>
           </thead>
 
@@ -409,8 +415,6 @@
     text-align: left;
     /* black lines */
     border: 1px solid;
-
-    /* padding: 1px; */
   }
 
   .fixed {
